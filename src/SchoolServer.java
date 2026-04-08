@@ -19,17 +19,19 @@ import java.util.UUID;
 
 public class SchoolServer {
 
-    private static final int PORT = 8080;
+    private static final int DEFAULT_PORT = 8080;
+    private static final String PORT_ENV = System.getenv("PORT");
+    private static final int PORT = (PORT_ENV != null) ? Integer.parseInt(PORT_ENV) : DEFAULT_PORT;
     private static final String STATIC_DIR = "src/main/resources/static";
     private static final String GALLERY_DIR = "src/main/resources/static/img/gallery";
     private static final String FACULTY_DIR = "src/main/resources/static/img/faculty";
     private static final String DOWNLOADS_DIR = "src/main/resources/static/downloads";
     private static final String BOOKS_DIR = "src/main/resources/static/books";
     
-    // MySQL Configuration
-    private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/adarsh_school_db?useSSL=false&allowPublicKeyRetrieval=true";
-    private static final String DB_USER = "root";
-    private static final String DB_PASS = "admin123"; // Updated password
+    // Database configuration - Using environment variables for Cloud Deployment
+    private static final String DB_URL = System.getenv().getOrDefault("DB_URL", "jdbc:mysql://127.0.0.1:3306/adarsh_school_db?useSSL=false&allowPublicKeyRetrieval=true");
+    private static final String DB_USER = System.getenv().getOrDefault("DB_USER", "root");
+    private static final String DB_PASS = System.getenv().getOrDefault("DB_PASS", "admin123");
 
     public static void main(String[] args) throws IOException {
         testDatabase();
