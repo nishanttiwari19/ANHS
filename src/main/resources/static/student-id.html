@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Student ID Card - Adarsh Narmada Hr Sec School Gangeo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        .id-portal-container {
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .id-preview-wrap {
+            display: none;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body style="background: #f0f2f5;">
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="logo" style="display: flex; align-items: center; gap: 15px;">
+            <img src="img/logo.png" alt="Logo" style="height: 50px; border-radius: 5px;">
+            <h1 style="color: white; font-size: 1.5rem;">Adarsh Narmada Hr Sec School Gangeo</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">HOME</a></li>
+            <li class="dropdown">
+                <a href="#about" class="dropbtn">ABOUT US <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="vision-mission.html">Vision & Mission</a>
+                    <a href="principal-message.html">Principal's Message</a>
+                    <a href="index.html#about">Our History</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">STUDENT CORNER <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="results.html">Exam Results</a>
+                    <a href="e-library.html">E-Library</a>
+                    <a href="student-id.html" class="active">Digital ID Card</a>
+                </div>
+            </li>
+            <li><a href="apply.html">ADMISSIONS</a></li>
+            <li><a href="career.html">CAREERS</a></li>
+            <li><a href="index.html#contact">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <div class="id-portal-container" id="search-box">
+        <i class="fas fa-id-card" style="font-size: 3.5rem; color: var(--navy); margin-bottom: 25px;"></i>
+        <h2 style="margin-bottom: 10px; color: var(--navy);">Get Your Student ID</h2>
+        <p style="color: #666; margin-bottom: 30px;">Enter your Roll Number to generate your digital ID card.</p>
+        
+        <div style="text-align: left; margin-bottom: 25px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--navy);">Enter Roll Number</label>
+            <input type="text" id="roll-input" placeholder="e.g. 101" style="width: 100%; padding: 15px; font-size: 1.1rem; border: 2px solid #e2e8f0; border-radius: 10px; transition: border-color 0.3s;">
+        </div>
+        
+        <button onclick="fetchStudentID()" class="primary" style="width: 100%; padding: 15px; font-size: 1.1rem; cursor: pointer; background: var(--navy); color: white; border: none; border-radius: 10px;">
+            Generate ID Card
+        </button>
+        <p id="error-msg" style="color: #ff4d4d; margin-top: 15px; display: none;">No student found with this roll number.</p>
+    </div>
+
+    <!-- Live Preview -->
+    <div class="id-preview-wrap" id="preview-container">
+        <div style="text-align: center; margin-bottom: 25px;">
+            <h3 style="color: var(--navy);">Your Digital ID Card</h3>
+            <p style="color: #666;">Preview your official ID card below.</p>
+        </div>
+
+        <div id="capture-area" style="width: fit-content; margin: 0 auto; padding: 10px;">
+            <!-- Official ID Card Template -->
+            <div class="id-card-template" style="display: block; margin: 0;">
+                <div class="id-card-header">
+                    <img src="img/logo.png" alt="Logo">
+                    <div class="id-card-school-info">
+                        <h4>ADARSH NARMADA</h4>
+                        <h5>Hr Sec School Gangeo</h5>
+                        <p>Rewa (M.P.) - 486111</p>
+                    </div>
+                </div>
+                <div class="id-card-body">
+                    <div class="id-card-photo-wrap">
+                        <img id="view-photo" src="img/faculty/default.jpg" alt="Student">
+                    </div>
+                    <h3 id="view-name">STUDENT NAME</h3>
+                    <div class="id-card-details">
+                        <div class="card-row"><span>Father:</span> <p id="view-father">-</p></div>
+                        <div class="card-row"><span>Class:</span> <p id="view-class">-</p></div>
+                        <div class="card-row"><span>Roll No:</span> <p id="view-roll">-</p></div>
+                        <div class="card-row"><span>DOB:</span> <p id="view-dob">-</p></div>
+                        <div class="card-row"><span>Blood:</span> <p id="view-blood">-</p></div>
+                        <div class="card-row"><span>Address:</span> <p id="view-address">-</p></div>
+                    </div>
+                </div>
+                <div class="id-card-footer">
+                    <div style="text-align: left;">
+                        <img id="view-sign" src="img/signature_placeholder.png" style="height: 30px; opacity: 1; object-fit: contain;">
+                        <p style="font-size: 0.6rem;">Principal Signature</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="font-size: 0.6rem; margin-top: 15px;">Session 2024-25</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-bottom: 50px;">
+            <button onclick="downloadCard()" class="primary" style="background: #27ae60; padding: 15px 30px; font-size: 1.1rem; cursor: pointer;">
+                <i class="fas fa-download"></i> Download as Image
+            </button>
+            <button onclick="location.reload()" style="background: none; border: 1px solid #999; padding: 15px 30px; margin-left: 10px; border-radius: 10px; cursor: pointer;">
+                Try Another
+            </button>
+        </div>
+    </div>
+
+    <script>
+        async function fetchStudentID() {
+            const roll = document.getElementById('roll-input').value;
+            if(!roll) return;
+
+            try {
+                const response = await fetch(`/api/students?roll=${roll}`);
+                const data = await response.json();
+
+                if(!data || !data.name) {
+                    document.getElementById('error-msg').style.display = 'block';
+                    return;
+                }
+
+                // Fill data
+                document.getElementById('view-name').textContent = data.name;
+                document.getElementById('view-father').textContent = data.father_name;
+                document.getElementById('view-class').textContent = data.student_class;
+                document.getElementById('view-roll').textContent = data.roll_no;
+                document.getElementById('view-dob').textContent = data.dob;
+                document.getElementById('view-blood').textContent = data.blood_group || '-';
+                document.getElementById('view-address').textContent = data.address;
+                document.getElementById('view-photo').src = `img/faculty/${data.photo}`;
+
+                // Load Branding
+                try {
+                    const brandResp = await fetch('/api/principal-message');
+                    const brandData = await brandResp.json();
+                    if(brandData.signature) {
+                        document.getElementById('view-sign').src = `img/faculty/${brandData.signature}`;
+                    }
+                } catch(e) {}
+
+                // Toggle visibility
+                document.getElementById('search-box').style.display = 'none';
+                document.getElementById('preview-container').style.display = 'block';
+                
+            } catch(e) {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        function downloadCard() {
+            const element = document.getElementById('capture-area');
+            const studentName = document.getElementById('view-name').textContent;
+            
+            html2canvas(element, {
+                scale: 4, 
+                useCORS: true,
+                backgroundColor: null
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `ID_Card_${studentName.replace(/\s+/g, '_')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>

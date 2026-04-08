@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career with us - Adarsh Narmada Hr Sec School Gangeo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="form-page-body">
+
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="school-info">
+            <span><i class="fas fa-map-marker-alt"></i> PHGW+CM6, Purwa No 4 313, MP 486111</span>
+            <span><i class="fas fa-phone"></i> +91 8989824557</span>
+        </div>
+        <a href="admin.html" class="admin-login-btn">ADMIN LOGIN</a>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="logo" style="display: flex; align-items: center; gap: 15px;">
+            <img src="img/logo.png" alt="Logo" style="height: 50px; border-radius: 5px;">
+            <h1 style="color: white; font-size: 1.5rem;">Adarsh Narmada Hr Sec School Gangeo</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">HOME</a></li>
+            <li class="dropdown">
+                <a href="#about" class="dropbtn">ABOUT US <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="vision-mission.html">Vision & Mission</a>
+                    <a href="principal-message.html">Principal's Message</a>
+                    <a href="index.html#about">Our History</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">STUDENT CORNER <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="results.html">Exam Results</a>
+                    <a href="e-library.html">E-Library</a>
+                    <a href="student-id.html">Digital ID Card</a>
+                </div>
+            </li>
+            <li><a href="apply.html">ADMISSIONS</a></li>
+            <li><a href="career.html" class="active">CAREERS</a></li>
+            <li><a href="index.html#contact">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <div class="admission-container" style="max-width: 600px; padding: 50px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="img/logo.png" alt="School Logo" style="height: 60px;">
+            <h1 style="color: white; margin-top: 15px; font-size: 1.8rem;">Adarsh Narmada Hr Sec School Gangeo</h1>
+            <p style="font-size: 0.8rem; color: #a0aec0;">Purwa 310, Gangeo, Rewa, Madhya Pradesh (486111)</p>
+            <p style="font-size: 0.8rem; color: #a0aec0;">📧 adarshnarmadagangeo@gmail.com | 📞 +91 8989824557</p>
+        </div>
+
+        <div style="border-top: 1px solid #4a5568; padding-top: 20px;">
+            <h2 style="color: white; font-size: 1.5rem; margin-bottom: 25px;">Career with us</h2>
+            
+            <form id="career-form">
+                <div class="form-field">
+                    <input type="text" id="name" placeholder="Name *" required>
+                </div>
+                
+                <div class="form-field">
+                    <select id="experience" required>
+                        <option value="">--Select Experience--</option>
+                        <option value="Fresher">Fresher</option>
+                        <option value="1-2 Years">1-2 Years</option>
+                        <option value="3-5 Years">3-5 Years</option>
+                        <option value="5+ Years">5+ Years</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <select id="profile" required>
+                        <option value="">--Select Profile--</option>
+                        <option value="Primary Teacher">Primary Teacher</option>
+                        <option value="Secondary Teacher">Secondary Teacher</option>
+                        <option value="Principal/Admin">Principal/Admin</option>
+                        <option value="Support Staff">Support Staff</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <input type="tel" id="mobile" placeholder="Mobile Number *" required pattern="[0-9]{10}">
+                </div>
+
+                <div class="form-field">
+                    <input type="email" id="email" placeholder="Email *" required>
+                </div>
+
+                <div class="form-field">
+                    <label style="color: #cbd5e0; font-size: 0.8rem; display: block; margin-bottom: 5px;">Upload Resume (Optional)</label>
+                    <input type="file" id="resume" style="color: white;">
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <button type="submit" class="btn-submit" style="background: #2f855a; width: 100px;">Submit</button>
+                    <a href="index.html" style="color: #cbd5e0; margin-left: 20px; text-decoration: none; font-size: 0.9rem;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('career-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                experience: document.getElementById('experience').value,
+                profile: document.getElementById('profile').value,
+                mobile: document.getElementById('mobile').value,
+                email: document.getElementById('email').value,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('/api/careers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert('Application submitted successfully! Our recruiters will contact you soon.');
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Submission failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Connection error. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

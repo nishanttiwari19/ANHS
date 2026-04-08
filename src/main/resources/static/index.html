@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adarsh Narmada Hr Sec School Gangeo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="school-info">
+            <span><i class="fas fa-map-marker-alt"></i> <a href="https://www.google.com/maps/search/?api=1&query=PHGW%2BCM6,+Purwa+No+4+313,+Madhya+Pradesh+486111" target="_blank" style="color: inherit; text-decoration: none;">PHGW+CM6, Purwa No 4 313, MP 486111</a></span>
+            <span><i class="fas fa-phone"></i> +91 8989824557</span>
+        </div>
+        <a href="admin.html" class="admin-login-btn">ADMIN LOGIN</a>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="logo" style="display: flex; align-items: center; gap: 15px;">
+            <img src="img/logo.png" alt="Logo" style="height: 50px; border-radius: 5px;">
+            <h1 style="color: white; font-size: 1.5rem;">Adarsh Narmada Hr Sec School Gangeo</h1>
+        </div>
+        <ul class="nav-links">
+            <li class="dropdown">
+                <a href="#about" class="dropbtn">ABOUT US <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="vision-mission.html">Vision & Mission</a>
+                    <a href="principal-message.html">Principal's Message</a>
+                    <a href="index.html#about">Our History</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">STUDENT CORNER <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="results.html">Exam Results</a>
+                    <a href="e-library.html">E-Library</a>
+                    <a href="student-id.html">Digital ID Card</a>
+                </div>
+            </li>
+            <li><a href="apply.html">ADMISSIONS</a></li>
+            <li><a href="career.html">CAREERS</a></li>
+            <li><a href="#contact">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Adarsh Narmada Hr Sec School Gangeo</h1>
+            <p>Empowering minds, building futures since 2000.</p>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <div class="about-grid">
+            <div class="about-text">
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: var(--navy);">About School</h2>
+                <p>School established in year 2000 and it is situated beside NH-30 bypass in Rural area of Gangeo block
+                    of Rewa district. School is affiliated with Madhya Pradesh Board of Secondary Education School.</p>
+                <div style="margin-top: 30px;">
+                    <a href="#" class="admin-login-btn">READ MORE</a>
+                </div>
+            </div>
+            <div class="about-img">
+                <img src="img/hero.png" alt="School Building">
+            </div>
+        </div>
+    </section>
+
+    <!-- Admissions Banner -->
+    <div class="admissions-banner" id="admissions">
+        <div>
+            <h2 style="font-size: 2rem;">Admissions Open 2024-25</h2>
+            <p>We are inviting applications for the session 2024-25, get registered now!</p>
+        </div>
+        <a href="apply.html" class="apply-btn">APPLY NOW</a>
+    </div>
+
+    <!-- News & Updates -->
+    <section class="section" id="notifications" style="background: var(--gray-light);">
+        <div class="section-title">
+            <h2>News & Updates</h2>
+            <p>Stay informed with our latest school activities</p>
+        </div>
+        <div class="news-container" id="notifications-list">
+            <!-- Notifications will be loaded here -->
+            <div class="news-item">
+                <div class="news-date">APR 08</div>
+                <div class="news-content">
+                    <h3>School Website Launched</h3>
+                    <p>Welcome to our new digital presence. Stay tuned for more updates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photo Gallery -->
+    <section class="section" id="gallery" style="background: white;">
+        <div class="section-title">
+            <h2>Photo Gallery</h2>
+            <p>Memories and events at Adarsh Narmada Hr Sec School Gangeo</p>
+        </div>
+        <div id="gallery-grid" class="testimonial-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+            <!-- Photos will be loaded here -->
+            <p style="text-align: center; grid-column: 1/-1;">Loading memories...</p>
+        </div>
+    </section>
+
+    <!-- Principal Profile Section -->
+    <section class="section" style="background: var(--white);">
+        <div class="about-grid">
+            <div class="about-img" id="principal-home-photo">
+                <img src="img/faculty/default_principal.jpg" id="p-home-img" alt="Principal" style="border-radius: 20px; border-left: 8px solid var(--yellow);">
+            </div>
+            <div>
+                <h4 style="color: var(--yellow); letter-spacing: 2px; margin-bottom: 10px;">MESSAGE FROM PRINCIPAL</h4>
+                <h2 id="p-home-name" style="font-size: 2.5rem; color: var(--navy); margin-bottom: 20px;">Principal Name</h2>
+                <div style="font-size: 1.4rem; font-style: italic; color: #555; margin-bottom: 25px; line-height: 1.4; border-left: 4px solid var(--yellow); padding-left: 20px;" id="p-home-quote">
+                    "Education is the most powerful weapon which you can use to change the world."
+                </div>
+                <p id="p-home-msg-preview" style="margin-bottom: 30px; color: #666;">
+                    Loading principal message...
+                </p>
+                <a href="principal-message.html" class="apply-btn">Read Full Message</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Faculty -->
+    <section class="section">
+        <div class="section-title">
+            <h2>Our Dedicated Faculty</h2>
+            <p>Meet the team behind our students' success</p>
+        </div>
+        <div class="faculty-grid" id="faculty-live-grid">
+            <!-- Dynamic faculty profiles will load here -->
+            <p style="text-align: center; grid-column: 1/-1;">Loading faculty profiles...</p>
+        </div>
+    </section>
+
+
+    <!-- Testimonials -->
+    <section class="section testimonials-section">
+        <div class="section-title">
+            <h2 style="color: white;">Testimonials</h2>
+            <p style="color: var(--yellow);">What happy parents say</p>
+        </div>
+        <div class="testimonial-grid" id="testimonials-live-grid">
+            <!-- Dynamic testimonials will load here -->
+            <p style="color: white; text-align: center; grid-column: 1/-1;">Loading reviews...</p>
+        </div>
+
+        <!-- Submit Review Form -->
+        <div class="review-form-container">
+            <h3 style="color: var(--navy); margin-bottom: 20px; text-align: center;">Write a Review</h3>
+            <form id="review-form" class="review-form">
+                <div class="review-input-group">
+                    <input type="text" id="review-name" placeholder="Your Name" required>
+                    <input type="text" id="review-relation" placeholder="Relation (e.g. Parent of Class 5th Student)" required>
+                </div>
+                <textarea id="review-message" rows="4" placeholder="Share your experience with our school..." required></textarea>
+                <div style="text-align: center;">
+                    <button type="submit" class="primary" style="width: 200px;">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Quick Enquiry Form -->
+    <section class="section" style="background: #f8fafc; border-top: 1px solid #eee;">
+        <div class="section-title">
+            <h2>Quick Enquiry</h2>
+            <p>Have questions? Send us a message and we'll get back to you.</p>
+        </div>
+        <div style="max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: var(--shadow);">
+            <form id="enquiry-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Full Name</label>
+                        <input type="text" id="enq-name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Email Address</label>
+                        <input type="email" id="enq-email" placeholder="email@example.com" required>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Mobile Number</label>
+                        <input type="tel" id="enq-mobile" placeholder="10-digit number" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Subject</label>
+                        <input type="text" id="enq-subject" placeholder="General Inquiry" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Your Message</label>
+                    <textarea id="enq-message" rows="4" placeholder="How can we help you?" required></textarea>
+                </div>
+                <div style="text-align: center;">
+                    <button type="submit" class="primary" style="width: 250px;">Send Message</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>Adarsh Narmada Hr Sec School</h3>
+                <p><a href="https://www.google.com/maps/search/?api=1&query=PHGW%2BCM6,+Purwa+No+4+313,+Madhya+Pradesh+486111" target="_blank" style="color: white; text-decoration: none;"><i class="fas fa-location-dot"></i> PHGW+CM6, Purwa No 4 313, Madhya Pradesh 486111</a></p>
+                <p style="margin-top: 20px;"><i class="fas fa-phone"></i> +91 8989824557</p>
+                <p><i class="fas fa-envelope"></i> contact@anhs.com</p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul style="list-style: none;">
+                    <li><a href="career.html" style="color: white;">Career</a></li>
+                    <li><a href="results.html" style="color: white;">Results</a></li>
+                    <li><a href="student-id.html" style="color: white;">Digital ID Card</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Copyright © 2024 Adarsh Narmada Hr Sec School Gangeo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>

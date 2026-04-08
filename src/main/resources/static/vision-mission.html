@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Vision & Mission - ANV Gangeo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="logo" style="display: flex; align-items: center; gap: 15px;">
+            <img src="img/logo.png" alt="Logo" style="height: 50px; border-radius: 5px;">
+            <h1 style="color: white; font-size: 1.5rem;">Adarsh Narmada Hr Sec School Gangeo</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">HOME</a></li>
+            <li class="dropdown">
+                <a href="#about" class="dropbtn">ABOUT US <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="vision-mission.html" class="active">Vision & Mission</a>
+                    <a href="principal-message.html">Principal's Message</a>
+                    <a href="index.html#about">Our History</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">STUDENT CORNER <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="results.html">Exam Results</a>
+                    <a href="e-library.html">E-Library</a>
+                    <a href="student-id.html">Digital ID Card</a>
+                </div>
+            </li>
+            <li><a href="apply.html">ADMISSIONS</a></li>
+            <li><a href="career.html">CAREERS</a></li>
+            <li><a href="index.html#contact">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <!-- Sub Banner -->
+    <section class="sub-banner">
+        <div class="sub-banner-content">
+            <h1 style="font-size: 3rem; font-weight: 700;">Our Vision & Mission</h1>
+            <div class="breadcrumbs">
+                <a href="index.html">Home</a> &nbsp; / &nbsp; Our Vision & Mission
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Area -->
+    <main class="page-container">
+        <!-- Message Box -->
+        <article class="content-box">
+            <h2 style="color: var(--navy); margin-bottom: 20px; font-size: 1.8rem;">Vision & Mission</h2>
+            <div id="vision-text" style="line-height: 1.8; color: #4a5568;">
+                Loading Vision & Mission statements...
+            </div>
+        </article>
+
+        <!-- Sidebar -->
+        <aside>
+            <div class="sidebar-box">
+                <h3 style="color: var(--navy); border-bottom: 2px solid var(--yellow); padding-bottom: 10px;">Important Links</h3>
+                <ul class="sidebar-links">
+                    <li><a href="principal-message.html">Principal's Message <i class="fas fa-chevron-right"></i></a></li>
+                    <li><a href="apply.html">Online Admission <i class="fas fa-chevron-right"></i></a></li>
+                    <li><a href="career.html">Career with Us <i class="fas fa-chevron-right"></i></a></li>
+                    <li><a href="index.html#gallery">Photo Gallery <i class="fas fa-chevron-right"></i></a></li>
+                </ul>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer style="margin-top: 80px; padding: 40px 0; text-align: center; background: var(--navy); color: white;">
+        <p>Copyright © 2024 Adarsh Narmada Vidhyalaya Gangeo. All rights reserved.</p>
+    </footer>
+
+    <script>
+        async function loadVisionMission() {
+            try {
+                const response = await fetch('/api/vision-mission');
+                const data = await response.json();
+                document.getElementById('vision-text').innerHTML = data.content || "To be a center of excellence in education, fostering holistic development and ethical values.";
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('vision-text').innerText = "Information will be updated soon.";
+            }
+        }
+        loadVisionMission();
+    </script>
+</body>
+</html>

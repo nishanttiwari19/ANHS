@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Adarsh Narmada Hr Sec School Gangeo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS for Excel Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body style="background: #f0f2f5;">
+
+    <div id="login-section" class="admin-container" style="margin-top: 100px; max-width: 400px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <img src="img/logo.png" alt="School Logo" style="height: 80px; margin-bottom: 15px;">
+            <h2 style="font-size: 1.2rem; color: #666;">Login to your account</h2>
+        </div>
+        <form id="login-form">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="primary" style="width: 100%;">Sign in</button>
+        </form>
+        <p id="error-msg" style="color: red; margin-top: 15px; display: none; text-align: center;">Invalid credentials</p>
+    </div>
+
+    <div id="dashboard-section" class="admin-layout" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <img src="img/logo.png" alt="Logo">
+                <div style="margin-top: 10px; font-weight: 700; font-size: 0.9rem; color: var(--yellow);">ADARSH NARMADA ADMIN</div>
+            </div>
+            <nav class="admin-nav-list">
+                <a onclick="showSection('notifications-dash')" class="admin-nav-item active" id="nav-notifications">
+                    <i class="fas fa-bullhorn"></i> <span>Manage News</span>
+                </a>
+                <a onclick="showSection('gallery-dash')" class="admin-nav-item" id="nav-gallery">
+                    <i class="fas fa-images"></i> <span>Photo Gallery</span>
+                </a>
+                <a onclick="showSection('enquiries-dash')" class="admin-nav-item" id="nav-enquiries">
+                    <i class="fas fa-envelope-open-text"></i> <span>Enquiries</span>
+                </a>
+                <a onclick="showSection('principal-dash')" class="admin-nav-item" id="nav-principal">
+                    <i class="fas fa-user-tie"></i> <span>Principal Profile</span>
+                </a>
+                <a onclick="showSection('vision-dash')" class="admin-nav-item" id="nav-vision">
+                    <i class="fas fa-eye"></i> <span>Vision & Mission</span>
+                </a>
+                <a onclick="showSection('faculty-dash')" class="admin-nav-item" id="nav-faculty">
+                    <i class="fas fa-chalkboard-teacher"></i> <span>Manage Faculty</span>
+                </a>
+                <a onclick="showSection('testimonials-dash')" class="admin-nav-item" id="nav-testimonials">
+                    <i class="fas fa-comment-dots"></i> <span>Testimonials</span>
+                </a>
+                <a onclick="showSection('applications-dash')" class="admin-nav-item" id="nav-applications">
+                    <i class="fas fa-file-signature"></i> <span>Admissions</span>
+                </a>
+                <a onclick="showSection('students-dash')" class="admin-nav-item" id="nav-students">
+                    <i class="fas fa-id-card"></i> <span>ID Card Gen</span>
+                </a>
+                <a onclick="showSection('results-dash')" class="admin-nav-item" id="nav-results">
+                    <i class="fas fa-poll-h"></i> <span>Manage Results</span>
+                </a>
+                <a onclick="showSection('careers-dash')" class="admin-nav-item" id="nav-careers">
+                    <i class="fas fa-briefcase"></i> <span>Careers</span>
+                </a>
+                <a onclick="showSection('settings-dash')" class="admin-nav-item" id="nav-settings">
+                    <i class="fas fa-cog"></i> <span>School Settings</span>
+                </a>
+                <a onclick="showSection('library-dash')" class="admin-nav-item" id="nav-library">
+                    <i class="fas fa-book"></i> <span>E-Library</span>
+                </a>
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <a onclick="logout()" class="admin-nav-item" style="color: #ff4d4d;">
+                        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-content">
+            <header class="admin-top-bar">
+                <h2 id="current-section-title">Manage News</h2>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="background: #e2e8f0; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: var(--navy);">Admin User</span>
+                    <i class="fas fa-user-circle" style="font-size: 2rem; color: var(--navy);"></i>
+                </div>
+            </header>
+
+            <!-- Notifications Dashboard -->
+            <div id="notifications-dash" class="admin-card">
+                <h3><i class="fas fa-plus-circle"></i> Post New Notification</h3>
+                <form id="notification-form">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="notif-title" placeholder="Update Title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="notif-category" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="Latest Updates">Latest Updates</option>
+                            <option value="Admissions">Admissions</option>
+                            <option value="Events">Events</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Message Content</label>
+                        <textarea id="notif-content" rows="4" placeholder="Detailed notification content..." required></textarea>
+                    </div>
+                    <button type="submit" class="primary">Submit Notification</button>
+                </form>
+                <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
+                <h3><i class="fas fa-list"></i> Existing Notifications</h3>
+                <div id="admin-notifications-list">
+                    <!-- Notifications will be listed here -->
+                </div>
+            </div>
+
+            <!-- Gallery Dashboard -->
+            <div id="gallery-dash" class="admin-card" style="display: none;">
+                <h3><i class="fas fa-upload"></i> Manage Photo Gallery</h3>
+                <div style="margin-bottom: 40px; padding: 20px; background: #f8fafc; border-radius: 10px;">
+                    <h4>Upload New Photo</h4>
+                    <div class="form-group">
+                        <input type="file" id="gallery-upload" accept="image/*">
+                        <button onclick="handleGalleryUpload()" class="primary" style="margin-top: 10px;">Upload Image</button>
+                    </div>
+                </div>
+                <div id="admin-gallery-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                    <!-- Gallery images with delete buttons -->
+                </div>
+            </div>
+
+            <!-- Applications Dashboard -->
+            <div id="applications-dash" class="admin-card" style="display: none;">
+                <h3><i class="fas fa-user-graduate"></i> Admission Applications</h3>
+                <div id="applications-list" style="margin-top: 20px;">
+                    <!-- Applications will be listed here -->
+                </div>
+            </div>
+
+            <!-- Faculty Dashboard -->
+            <div id="faculty-dash" class="admin-card" style="display: none;">
+                <h3><i class="fas fa-chalkboard-teacher"></i> Manage Faculty</h3>
+                <div style="margin-bottom: 40px; padding: 20px; background: #f8fafc; border-radius: 10px;">
+                    <div class="form-group">
+                        <label>Teacher Name</label>
+                        <input type="text" id="faculty-name-input" placeholder="e.g. Mr. John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teacher Photo</label>
+                        <input type="file" id="faculty-photo-input" accept="image/*" required>
+                    </div>
+                    <button onclick="addFaculty()" class="primary">Add Teacher</button>
+                </div>
+                <div id="faculty-admin-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px;">
+                    <!-- Faculty list will appear here -->
+                </div>
+            </div>
+
+            <!-- Vision Dashboard -->
+            <div id="vision-dash" class="admin-card" style="display: none;">
+                <h3><i class="fas fa-eye"></i> Update Vision & Mission</h3>
+                <div class="form-group">
+                    <label>Vision & Mission Content (HTML allowed)</label>
+                    <textarea id="vision-msg-input" rows="10" placeholder="Type vision/mission here..." required></textarea>
+                </div>
+                <button onclick="updateVisionMission()" class="primary">Update Content</button>
+            </div>
+
+            <!-- Principal Dashboard -->
+            <div id="principal-dash" class="admin-card" style="display: none;">
+                <h3><i class="fas fa-user-tie"></i> Update Principal's Profile</h3>
+                <div class="form-group">
+                    <label>Principal Name</label>
+                    <input type="text" id="principal-name-input" placeholder="e.g. Dr. John Doe" required>
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 150px; gap: 20px;">
+                    <div>
+                        <label>Profile Photo</label>
+                        <input type="file" id="principal-photo-input" accept="image/*">
+                    </div>
+                    <div id="p-photo-preview" style="text-align: center;">
+                        <img id="p-photo-v" src="" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid var(--yellow); display: none;">
+                    </div>
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <label>Official Seal (PNG recommended)</label>
+                        <input type="file" id="principal-seal-input" accept="image/*">
+                        <div id="p-seal-preview" style="margin-top: 10px;">
+                            <img id="p-seal-v" src="" style="height: 60px; border: 1px solid #ddd; display: none;">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Principal Signature (PNG recommended)</label>
+                        <input type="file" id="principal-sign-input" accept="image/*">
+                        <div id="p-sign-preview" style="margin-top: 10px;">
+                            <img id="p-sign-v" src="" style="height: 40px; border: 1px solid #ddd; display: none;">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Short Quote / Tagline</label>
+                    <input type="text" id="principal-quote-input" placeholder="e.g. Education is the manifestation of perfection..." required>
+                </div>
+                <div class="form-group">
+                    <label>Full Message (HTML allowed)</label>
+                    <textarea id="principal-msg-input" rows="10" placeholder="Type message here..." required></textarea>
+                </div>
+                <button onclick="updatePrincipalProfile()" class="primary">Update Profile</button>
+            </div>
+
+            <!-- Testimonials Dashboard -->
+            <div id="testimonials-dash" class="admin-card" style="display: none;">
+                <h3><i class="fas fa-comments"></i> Parent Testimonials</h3>
+                <div id="testimonials-admin-list" style="margin-top: 20px;">
+                    <!-- Testimonials will be listed here -->
+                </div>
+            </div>
+
+            <!-- Careers Dashboard -->
+            <div id="careers-dash" class="admin-card" style="display: none;">
+                <h3><i class="fas fa-briefcase"></i> Career Applications</h3>
+                <div id="careers-list" style="margin-top: 20px;">
+                    <!-- Careers will be listed here -->
+                </div>
+            </div>
+
+            <!-- School Settings Dashboard -->
+            <div id="settings-dash" class="admin-card" style="display: none;">
+                <h3><i class="fas fa-cogs"></i> School Settings & Contact Info</h3>
+                <p style="margin-bottom: 20px; color: #666;">Changes here will update all headers, footers, and contact sections across the website.</p>
+                
+                <div class="form-group">
+                    <label>Official Email Address</label>
+                    <input type="email" id="set-email" placeholder="e.g. contact@anhs.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Official Phone Number</label>
+                    <input type="text" id="set-phone" placeholder="e.g. +91 8989824557" required>
+                </div>
+                <div class="form-group">
+                    <label>School Address (Full)</label>
+                    <textarea id="set-address" rows="3" placeholder="Enter physical address..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Google Maps / Plus Code Link</label>
+                    <input type="text" id="set-maps" placeholder="https://www.google.com/maps/..." required>
+                </div>
+                <button onclick="updateSchoolSettings()" class="primary">Save Settings</button>
+            </div>
+
+            <!-- Students & ID Card Dashboard -->
+            <div id="students-dash" class="admin-card" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3><i class="fas fa-id-card"></i> Student ID Card Generator</h3>
+                    <button onclick="document.getElementById('add-student-form-wrap').style.display='block'" class="primary" style="background: var(--yellow); color: var(--navy);">+ Add New Student</button>
+                </div>
+
+                <!-- Add Student Form -->
+                <div id="add-student-form-wrap" style="display: none; background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-bottom: 20px;">Enter Student Details</h4>
+                    <form id="student-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="stu-name" placeholder="Student Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Father's Name</label>
+                                <input type="text" id="stu-father" placeholder="Father's Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Class</label>
+                                <input type="text" id="stu-class" placeholder="e.g. 10th-A" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Roll No</label>
+                                <input type="text" id="stu-roll" placeholder="Roll Number" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="date" id="stu-dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Blood Group</label>
+                                <input type="text" id="stu-blood" placeholder="e.g. O+">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <textarea id="stu-address" rows="2" placeholder="Residential Address" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Photo</label>
+                            <input type="file" id="stu-photo" accept="image/*" required>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button type="submit" class="primary">Save Student</button>
+                            <button type="button" onclick="document.getElementById('add-student-form-wrap').style.display='none'" style="background: #e2e8f0; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Student List -->
+                <div id="admin-students-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                    <!-- Student list will appear here -->
+                </div>
+            </div>
+
+            <!-- ID Card Preview Modal -->
+            <div id="id-card-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; overscroll-behavior: contain;">
+                <div style="background: white; padding: 30px; border-radius: 15px; position: relative; max-height: 90vh; overflow-y: auto;">
+                    <button onclick="document.getElementById('id-card-modal').style.display='none'" style="position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    <h3 style="margin-bottom: 20px;">ID Card Preview</h3>
+                    
+                    <div id="id-card-capture-area">
+                        <!-- Custom ID Card Design -->
+                        <div class="id-card-template">
+                            <div class="id-card-header">
+                                <img src="img/logo.png" alt="Logo">
+                                <div class="id-card-school-info">
+                                    <h4>ADARSH NARMADA</h4>
+                                    <h5>Hr Sec School Gangeo</h5>
+                                    <p>Rewa (M.P.) - 486111</p>
+                                </div>
+                            </div>
+                            <div class="id-card-body">
+                                <div class="id-card-photo-wrap">
+                                    <img id="card-photo" src="img/faculty/default.jpg" alt="Student">
+                                </div>
+                                <h3 id="card-name">STUDENT NAME</h3>
+                                <div class="id-card-details">
+                                    <div class="card-row"><span>Father:</span> <p id="card-father">-</p></div>
+                                    <div class="card-row"><span>Class:</span> <p id="card-class">-</p></div>
+                                    <div class="card-row"><span>Roll No:</span> <p id="card-roll">-</p></div>
+                                    <div class="card-row"><span>DOB:</span> <p id="card-dob">-</p></div>
+                                    <div class="card-row"><span>Blood:</span> <p id="card-blood">-</p></div>
+                                    <div class="card-row"><span>Address:</span> <p id="card-address">-</p></div>
+                                </div>
+                            </div>
+                            <div class="id-card-footer">
+                                <div style="text-align: left;">
+                                    <img id="card-sign" src="img/signature_placeholder.png" style="height: 30px; opacity: 0.7; object-fit: contain;">
+                                    <p style="font-size: 0.6rem;">Principal Signature</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <p style="font-size: 0.6rem; margin-top: 15px;">Valid for session 2024-25</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 25px; display: flex; justify-content: center;">
+                        <button onclick="downloadIDCard()" class="primary" style="background: #27ae60;">
+                            <i class="fas fa-download"></i> Download ID Card (Image)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Dashboard -->
+            <div id="results-dash" class="admin-card" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3><i class="fas fa-poll-h"></i> Manage Student Results</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="downloadExcelTemplate()" class="primary" style="background: #e2e8f0; color: #444; border: 1px solid #ccc;"><i class="fas fa-download"></i> Template</button>
+                        <button onclick="document.getElementById('excel-upload-input').click()" class="primary" style="background: #27ae60;"><i class="fas fa-file-excel"></i> Bulk Upload (Excel)</button>
+                        <input type="file" id="excel-upload-input" style="display: none;" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(this)">
+                        <button onclick="document.getElementById('add-result-form-wrap').style.display='block'" class="primary" style="background: var(--yellow); color: var(--navy);">+ Add Single Result</button>
+                    </div>
+                </div>
+
+                <!-- Add Result Form -->
+                <div id="add-result-form-wrap" style="display: none; background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-bottom: 20px;">Enter Exam Results</h4>
+                    <form id="result-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label>Roll Number</label>
+                                <input type="text" id="res-roll" placeholder="Unique Roll No" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Student Name</label>
+                                <input type="text" id="res-name" placeholder="Student Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Class</label>
+                                <input type="text" id="res-class" placeholder="e.g. 10th" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Total Marks (All Subjects)</label>
+                                <input type="number" id="res-total" placeholder="e.g. 500" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Obtained Marks</label>
+                                <input type="number" id="res-obtained" placeholder="e.g. 420" required>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 10px;">Subject-wise Marks (Optional)</label>
+                            <div id="subject-inputs">
+                                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                    <input type="text" placeholder="Subject Name" class="sub-name" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                                    <input type="number" placeholder="Marks" class="sub-marks" style="width: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                                    <button type="button" onclick="addSubjectInput()" style="padding: 10px; background: #e2e8f0; border: none; border-radius: 5px; cursor: pointer;"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 30px;">
+                            <button type="submit" class="primary">Save Result</button>
+                            <button type="button" onclick="document.getElementById('add-result-form-wrap').style.display='none'" style="background: #e2e8f0; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results List -->
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden;">
+                        <thead style="background: var(--navy); color: white; text-align: left;">
+                            <tr>
+                                <th style="padding: 15px;">Roll No</th>
+                                <th style="padding: 15px;">Name</th>
+                                <th style="padding: 15px;">Class</th>
+                                <th style="padding: 15px;">Marks</th>
+                                <th style="padding: 15px;">%</th>
+                                <th style="padding: 15px;">Status</th>
+                                <th style="padding: 15px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-results-table">
+                            <!-- Results will appear here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- E-Library Dashboard -->
+            <div id="library-dash" class="admin-card" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3><i class="fas fa-book"></i> E-Library Management</h3>
+                    <button onclick="document.getElementById('add-book-form-wrap').style.display='block'" class="primary" style="background: var(--yellow); color: var(--navy);">+ Add New Book</button>
+                </div>
+
+                <!-- Add Book Form -->
+                <div id="add-book-form-wrap" style="display: none; background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-bottom: 20px;">Upload Book Details</h4>
+                    <form id="book-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label>Book Title</label>
+                                <input type="text" id="lib-title" placeholder="e.g. Physics Class 12th" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Author / Publisher</label>
+                                <input type="text" id="lib-author" placeholder="e.g. NCERT" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>PDF File</label>
+                            <input type="file" id="lib-pdf" accept=".pdf" required>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button type="submit" class="primary">Upload Book</button>
+                            <button type="button" onclick="document.getElementById('add-book-form-wrap').style.display='none'" style="background: #e2e8f0; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Books List -->
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden;">
+                        <thead style="background: var(--navy); color: white; text-align: left;">
+                            <tr>
+                                <th style="padding: 15px;">Title</th>
+                                <th style="padding: 15px;">Author</th>
+                                <th style="padding: 15px;">Upload Date</th>
+                                <th style="padding: 15px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-library-table">
+                            <!-- Books will appear here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Website Enquiries Dashboard -->
+            <div id="enquiries-dash" class="admin-card" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3><i class="fas fa-envelope-open-text"></i> Website Enquiries</h3>
+                    <button onclick="loadEnquiries()" class="primary" style="background: var(--navy);"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden;">
+                        <thead style="background: var(--navy); color: white; text-align: left;">
+                            <tr>
+                                <th style="padding: 15px;">Date</th>
+                                <th style="padding: 15px;">Name/Mobile</th>
+                                <th style="padding: 15px;">Subject</th>
+                                <th style="padding: 15px;">Message</th>
+                                <th style="padding: 15px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-enquiries-table">
+                            <!-- Enquiries will appear here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Simple Auth Simulation
+        const loginForm = document.getElementById('login-form');
+        const loginSection = document.getElementById('login-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    sessionStorage.setItem('adminToken', result.token);
+                    showDashboard();
+                } else {
+                    errorMsg.innerText = (result.message || 'Invalid credentials') + '. Please check your spelling and case sensitivity.';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                errorMsg.innerText = 'Server error. Please try again.';
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        function showDashboard() {
+            loginSection.style.display = 'none';
+            dashboardSection.style.display = 'flex';
+            // Initial data load
+            loadAdminNotifications();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminToken');
+            location.reload();
+        }
+
+        if (sessionStorage.getItem('adminToken')) {
+            showDashboard();
+        }
+    </script>
+</body>
+</html>
