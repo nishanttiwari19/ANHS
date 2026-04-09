@@ -160,7 +160,19 @@ public class SchoolServer {
                     String seedHash = hash(seedPass);
                     stmt.execute("INSERT IGNORE INTO admin_users (username, password_hash) VALUES ('" + seedUser + "', '" + seedHash + "')");
                     
-                    // MASTER DIAGNOSTIC
+                    // MASTER DIAGNOSTIC & MIGRATION ENHANCEMENT
+                    try {
+                        // Ensure all image columns are LONGTEXT for Base64 storage
+                        stmt.execute("ALTER TABLE faculty MODIFY COLUMN photo LONGTEXT");
+                        stmt.execute("ALTER TABLE students MODIFY COLUMN photo LONGTEXT");
+                        stmt.execute("ALTER TABLE principal_profile MODIFY COLUMN photo LONGTEXT");
+                        stmt.execute("ALTER TABLE principal_profile MODIFY COLUMN seal_photo LONGTEXT");
+                        stmt.execute("ALTER TABLE principal_profile MODIFY COLUMN signature_photo LONGTEXT");
+                        System.out.println(">>> Database columns successfully migrated to LONGTEXT.");
+                    } catch (SQLException e) {
+                        System.out.println(">>> Migration notice: " + e.getMessage());
+                    }
+
                     System.out.println(">>> All tables verified/created successfully.");
                 }
 

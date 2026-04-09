@@ -558,6 +558,8 @@ async function addFaculty() {
                 nameInput.value = '';
                 photoInput.value = '';
                 loadFacultyAdmin();
+            } else {
+                alert('Error: Could not save teacher profile. The photo might be too large or the server is busy.');
             }
         } catch (error) {
             console.error('Error adding faculty:', error);
@@ -763,15 +765,24 @@ if (studentForm) {
         };
 
         try {
-            await fetch('/api/students', {
+            const response = await fetch('/api/students', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
                 body: JSON.stringify(data)
             });
-            studentForm.reset();
-            document.getElementById('add-student-form-wrap').style.display = 'none';
-            loadStudents();
-        } catch (e) { alert('Error saving student'); }
+
+            if (response.ok) {
+                alert('Student record saved successfully!');
+                studentForm.reset();
+                document.getElementById('add-student-form-wrap').style.display = 'none';
+                loadStudents();
+            } else {
+                alert('Error: Could not save student record. Please check if the Roll Number is unique or try a smaller photo.');
+            }
+        } catch (e) { 
+            console.error('Error saving student:', e);
+            alert('Server error occurred while saving student.');
+        }
     });
 }
 
@@ -1033,7 +1044,9 @@ async function updateSchoolSettings() {
         });
         if (response.ok) {
             alert('Settings updated successfully!');
-            dynamicizeContactInfo(); // Update current page
+            dynamicizeContactInfo();
+        } else {
+            alert('Failed to update settings.');
         }
     } catch (e) { alert('Error updating settings'); }
 }
