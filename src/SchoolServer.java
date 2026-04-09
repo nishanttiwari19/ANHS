@@ -73,6 +73,7 @@ public class SchoolServer {
                 System.out.println(">>> Connected to MySQL Successfully!");
                 // Auto-create students table if missing
                 try (Statement stmt = conn.createStatement()) {
+                    // 1. Students (for ID generator)
                     stmt.execute("CREATE TABLE IF NOT EXISTS students (" +
                         "id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
                         "name VARCHAR(255) NOT NULL, " +
@@ -85,7 +86,8 @@ public class SchoolServer {
                         "address TEXT, " +
                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
                     
-                stmt.execute("CREATE TABLE IF NOT EXISTS results (" +
+                    // 2. Results
+                    stmt.execute("CREATE TABLE IF NOT EXISTS results (" +
                         "id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
                         "roll_no VARCHAR(50) UNIQUE NOT NULL, " +
                         "student_name VARCHAR(255) NOT NULL, " +
@@ -98,78 +100,66 @@ public class SchoolServer {
                         "status VARCHAR(20), " +
                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
 
-                stmt.execute("CREATE TABLE IF NOT EXISTS school_settings (" +
+                    // 3. School Settings
+                    stmt.execute("CREATE TABLE IF NOT EXISTS school_settings (" +
                         "id INT PRIMARY KEY DEFAULT 1, email VARCHAR(255), phone VARCHAR(100), address TEXT, maps_link TEXT)");
-                stmt.execute("INSERT IGNORE INTO school_settings (id, email, phone, address, maps_link) " +
+                    stmt.execute("INSERT IGNORE INTO school_settings (id, email, phone, address, maps_link) " +
                         "VALUES (1, 'contact@anhs.com', '+91 8989824557', 'Purwa No 4 313, Gangeo, Rewa, MP 486111', 'https://www.google.com/maps/search/?api=1&query=PHGW%2BCM6,+Purwa+No+4+313,+Madhya+Pradesh+486111')");
 
-                stmt.execute("CREATE TABLE IF NOT EXISTS principal_profile (" +
-                        "id INT PRIMARY KEY DEFAULT 1, name VARCHAR(255), quote TEXT, message TEXT, photo VARCHAR(255))");
-                
-                // Add new columns for Seal and Signature if they don't exist
-                try { stmt.execute("ALTER TABLE principal_profile ADD COLUMN seal_photo VARCHAR(255)"); } catch(Exception e){}
-                try { stmt.execute("ALTER TABLE principal_profile ADD COLUMN signature_photo VARCHAR(255)"); } catch(Exception e){}
-                
-                stmt.execute("INSERT IGNORE INTO principal_profile (id, name, quote, message, photo) VALUES (1, 'Principal Name', 'Quote...', 'Msg...', 'default_principal.jpg')");
-                
-                // Add books table if missing (auto-create)
-                stmt.execute("CREATE TABLE IF NOT EXISTS books (" +
-                    "id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
-                    "title VARCHAR(255) NOT NULL, " +
-                    "author VARCHAR(255), " +
-                    "pdf_path VARCHAR(255), " +
-                    "upload_date DATETIME DEFAULT CURRENT_TIMESTAMP)");
-                
-                // Add enquiries table if missing
-                stmt.execute("CREATE TABLE IF NOT EXISTS enquiries (" +
-                    "id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
-                    "name VARCHAR(255) NOT NULL, " +
-                    "email VARCHAR(255), " +
-                    "mobile VARCHAR(15), " +
-                    "subject VARCHAR(255), " +
-                    "message TEXT, " +
-                    "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)");
+                    // 4. Principal Profile
+                    stmt.execute("CREATE TABLE IF NOT EXISTS principal_profile (" +
+                        "id INT PRIMARY KEY DEFAULT 1, name VARCHAR(255), quote TEXT, message TEXT, photo VARCHAR(255), seal_photo VARCHAR(255), signature_photo VARCHAR(255))");
+                    stmt.execute("INSERT IGNORE INTO principal_profile (id, name, quote, message, photo) VALUES (1, 'Principal Name', 'Quote...', 'Msg...', 'default_principal.jpg')");
+                    
+                    // 5. Books (Library)
+                    stmt.execute("CREATE TABLE IF NOT EXISTS books (" +
+                        "id BIGINT PRIMARY KEY AUTO_INCREMENT, title VARCHAR(255) NOT NULL, author VARCHAR(255), pdf_path VARCHAR(255), upload_date DATETIME DEFAULT CURRENT_TIMESTAMP)");
+                    
+                    // 6. Enquiries
+                    stmt.execute("CREATE TABLE IF NOT EXISTS enquiries (" +
+                        "id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255) NOT NULL, email VARCHAR(255), mobile VARCHAR(15), subject VARCHAR(255), message TEXT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)");
 
-                // Add admin_users and sessions table
-                stmt.execute("CREATE TABLE IF NOT EXISTS admin_users (" +
-                    "id INT PRIMARY KEY AUTO_INCREMENT, " +
-                    "username VARCHAR(100) UNIQUE NOT NULL, " +
-                    "password_hash VARCHAR(255) NOT NULL, " +
-                    "created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
-                
-                stmt.execute("CREATE TABLE IF NOT EXISTS sessions (" +
-                    "token VARCHAR(100) PRIMARY KEY, " +
-                    "username VARCHAR(100) NOT NULL, " +
-                    "expiry DATETIME NOT NULL)");
+                    // 7. Auth (Admin & Sessions)
+                    stmt.execute("CREATE TABLE IF NOT EXISTS admin_users (" +
+                        "id INT PRIMARY KEY AUTO_INCREMENT, username VARCHAR(100) UNIQUE NOT NULL, password_hash VARCHAR(255) NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
+                    stmt.execute("CREATE TABLE IF NOT EXISTS sessions (" +
+                        "token VARCHAR(100) PRIMARY KEY, username VARCHAR(100) NOT NULL, expiry DATETIME NOT NULL)");
 
-                // Seed initial admin if missing
-                String seedUser = "Nishant";
-                String seedPass = "Nishant@2005";
-                String seedHash = hash(seedPass);
-                
-                // Force update password for the primary admin
-                stmt.execute("INSERT INTO admin_users (username, password_hash) VALUES ('" + seedUser + "', '" + seedHash + "') " +
-                             "ON DUPLICATE KEY UPDATE password_hash='" + seedHash + "'");
-                
-                // Ensure the hash is correct by running an explicit update if insert didn't do it
-                try (PreparedStatement upstmt = conn.prepareStatement("UPDATE admin_users SET password_hash = ? WHERE username = ?")) {
-                    upstmt.setString(1, seedHash);
-                    upstmt.setString(2, seedUser);
-                    upstmt.executeUpdate();
+                    // 8. Notifications (MISSING PREVIOUSLY)
+                    stmt.execute("CREATE TABLE IF NOT EXISTS notifications (" +
+                        "id BIGINT PRIMARY KEY AUTO_INCREMENT, title VARCHAR(255) NOT NULL, category VARCHAR(100), content TEXT, date DATETIME DEFAULT CURRENT_TIMESTAMP)");
+
+                    // 9. Applications (MISSING PREVIOUSLY)
+                    stmt.execute("CREATE TABLE IF NOT EXISTS applications (" +
+                        "id BIGINT PRIMARY KEY AUTO_INCREMENT, student_name VARCHAR(255), student_class VARCHAR(50), mobile VARCHAR(15), data_json JSON, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)");
+
+                    // 10. Careers (MISSING PREVIOUSLY)
+                    stmt.execute("CREATE TABLE IF NOT EXISTS careers (" +
+                        "id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), profile VARCHAR(100), mobile VARCHAR(15), data_json JSON, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)");
+
+                    // 11. Testimonials (MISSING PREVIOUSLY)
+                    stmt.execute("CREATE TABLE IF NOT EXISTS testimonials (" +
+                        "id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), relation VARCHAR(255), message TEXT)");
+
+                    // 12. Faculty (MISSING PREVIOUSLY)
+                    stmt.execute("CREATE TABLE IF NOT EXISTS faculty (" +
+                        "id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), photo VARCHAR(255))");
+
+                    // 13. Vision & Mission (MISSING PREVIOUSLY)
+                    stmt.execute("CREATE TABLE IF NOT EXISTS vision_mission (" +
+                        "id INT PRIMARY KEY DEFAULT 1, content TEXT)");
+                    stmt.execute("INSERT IGNORE INTO vision_mission (id, content) VALUES (1, 'To provide quality education...')");
+
+                    // Seed initial admin
+                    String seedUser = "Nishant";
+                    String seedPass = "Nishant@2005";
+                    String seedHash = hash(seedPass);
+                    stmt.execute("INSERT IGNORE INTO admin_users (username, password_hash) VALUES ('" + seedUser + "', '" + seedHash + "')");
+                    
+                    // MASTER DIAGNOSTIC
+                    System.out.println(">>> All tables verified/created successfully.");
                 }
 
-                // Cleanup old admin if it exists
-                stmt.execute("DELETE FROM admin_users WHERE username='admin'");
-
-                // MASTER DIAGNOSTIC: List all users in DB
-                System.out.println("---------- [DATABASE AUTH STATE] ----------");
-                try (ResultSet rsUsers = stmt.executeQuery("SELECT username, password_hash FROM admin_users")) {
-                    while (rsUsers.next()) {
-                        System.out.println("USER: [" + rsUsers.getString("username") + "] HASH: [" + rsUsers.getString("password_hash") + "]");
-                    }
-                }
-                System.out.println("-------------------------------------------");
-                }
             }
         } catch (SQLException se) {
             System.err.println("!!! MySQL Error Code: " + se.getErrorCode());
@@ -241,8 +231,8 @@ public class SchoolServer {
                 while ((nRead = is.read(data, 0, data.length)) != -1) buffer.write(data, 0, nRead);
                 String body = buffer.toString("UTF-8");
 
-                String user = extract(body, "username").trim();
-                String pass = extract(body, "password");
+                String user = extractValue(body, "username").trim();
+                String pass = extractValue(body, "password");
                 String hashedPass = hash(pass);
 
                 System.out.println(">>> [AUTH DEBUG] Body: " + body);
@@ -280,27 +270,6 @@ public class SchoolServer {
                 }
             }
             exchange.getResponseBody().close();
-        }
-        
-        private String extract(String json, String key) {
-            try {
-                String search = "\"" + key + "\"";
-                int startPos = json.indexOf(search);
-                if (startPos == -1) return "";
-                
-                int colonPos = json.indexOf(":", startPos);
-                if (colonPos == -1) return "";
-                
-                int quoteStart = json.indexOf("\"", colonPos);
-                if (quoteStart == -1) return "";
-                
-                int quoteEnd = json.indexOf("\"", quoteStart + 1);
-                if (quoteEnd == -1) return "";
-                
-                return json.substring(quoteStart + 1, quoteEnd);
-            } catch (Exception e) {
-                return "";
-            }
         }
     }
 
@@ -362,8 +331,8 @@ public class SchoolServer {
                 String body = buffer.toString("UTF-8");
 
                 try {
-                    String name = extract(body, "name");
-                    String base64Data = extract(body, "photo");
+                    String name = extractValue(body, "name");
+                    String base64Data = extractValue(body, "photo");
                     if (base64Data.contains(",")) base64Data = base64Data.split(",")[1];
                     
                     String fileName = System.currentTimeMillis() + "_faculty.jpg";
@@ -433,26 +402,20 @@ public class SchoolServer {
                 byte[] bytes = json.getBytes();
                 exchange.sendResponseHeaders(200, bytes.length);
                 exchange.getResponseBody().write(bytes);
-            } 
-            else if (method.equalsIgnoreCase("POST")) {
+            } else if (method.equalsIgnoreCase("POST")) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
                 String body = reader.lines().collect(Collectors.joining());
-                
-                String pattern = "\"content\":\"";
-                int start = body.indexOf(pattern);
-                if (start != -1) {
-                    start += pattern.length();
-                    int end = body.lastIndexOf("\"");
-                    if (end > start) {
-                        String msg = body.substring(start, end);
+                try {
+                    String contentValue = extractValue(body, "content");
+                    if (!contentValue.isEmpty()) {
                         try (Connection conn = getConnection();
                              PreparedStatement pstmt = conn.prepareStatement("UPDATE vision_mission SET content = ? LIMIT 1")) {
-                            pstmt.setString(1, msg);
+                            pstmt.setString(1, contentValue);
                             pstmt.executeUpdate();
                         } catch (Exception e) { e.printStackTrace(); }
                         exchange.sendResponseHeaders(200, 0);
                     } else { exchange.sendResponseHeaders(400, -1); }
-                } else { exchange.sendResponseHeaders(400, -1); }
+                } catch (Exception e) { exchange.sendResponseHeaders(400, -1); }
             }
             exchange.getResponseBody().close();
         }
@@ -497,9 +460,9 @@ public class SchoolServer {
                 String body = reader.lines().collect(Collectors.joining());
                 
                 try {
-                    String name = extract(body, "name");
-                    String relation = extract(body, "relation");
-                    String message = extract(body, "message");
+                    String name = extractValue(body, "name");
+                    String relation = extractValue(body, "relation");
+                    String message = extractValue(body, "message");
                     
                     try (Connection conn = getConnection();
                          PreparedStatement pstmt = conn.prepareStatement("INSERT INTO testimonials (name, relation, message) VALUES (?, ?, ?)")) {
@@ -575,10 +538,10 @@ public class SchoolServer {
                 String body = buffer.toString("UTF-8");
 
                 try {
-                    String email = extract(body, "email");
-                    String phone = extract(body, "phone");
-                    String address = extract(body, "address");
-                    String mapsLink = extract(body, "maps_link");
+                    String email = extractValue(body, "email");
+                    String phone = extractValue(body, "phone");
+                    String address = extractValue(body, "address");
+                    String mapsLink = extractValue(body, "maps_link");
 
                     try (Connection conn = getConnection();
                          PreparedStatement pstmt = conn.prepareStatement("UPDATE school_settings SET email=?, phone=?, address=?, maps_link=? WHERE id=1")) {
@@ -592,16 +555,6 @@ public class SchoolServer {
                 } catch (Exception e) { e.printStackTrace(); exchange.sendResponseHeaders(400, -1); }
             }
             exchange.getResponseBody().close();
-        }
-
-        private String extract(String json, String key) {
-            String pattern = "\"" + key + "\":\"";
-            int start = json.indexOf(pattern);
-            if (start == -1) return "";
-            start += pattern.length();
-            int end = json.indexOf("\"", start);
-            if (end == -1) return "";
-            return json.substring(start, end).replace("\\n", "\n").replace("\\\"", "\"");
         }
     }
 
@@ -653,12 +606,12 @@ public class SchoolServer {
                 String body = buffer.toString("UTF-8");
 
                 try {
-                    String name = extract(body, "name");
-                    String quote = extract(body, "quote");
-                    String message = extract(body, "message");
-                    String photoBase64 = extract(body, "photo");
-                    String sealBase64 = extract(body, "seal");
-                    String signBase64 = extract(body, "signature");
+                    String name = extractValue(body, "name");
+                    String quote = extractValue(body, "quote");
+                    String message = extractValue(body, "message");
+                    String photoBase64 = extractValue(body, "photo");
+                    String sealBase64 = extractValue(body, "seal");
+                    String signBase64 = extractValue(body, "signature");
 
                     String photoFile = "";
                     String sealFile = "";
@@ -741,9 +694,9 @@ public class SchoolServer {
                 String body = br.lines().collect(Collectors.joining());
                 
                 try {
-                    String name = extract(body, "name");
-                    String profile = extract(body, "profile");
-                    String mobile = extract(body, "mobile");
+                    String name = extractValue(body, "name");
+                    String profile = extractValue(body, "profile");
+                    String mobile = extractValue(body, "mobile");
                     
                     try (Connection conn = getConnection();
                          PreparedStatement pstmt = conn.prepareStatement("INSERT INTO careers (name, profile, mobile, data_json) VALUES (?, ?, ?, ?)")) {
@@ -829,9 +782,9 @@ public class SchoolServer {
                 String body = buffer.toString("UTF-8");
 
                 try {
-                    String title = extract(body, "title");
-                    String author = extract(body, "author");
-                    String base64Data = extract(body, "data");
+                    String title = extractValue(body, "title");
+                    String author = extractValue(body, "author");
+                    String base64Data = extractValue(body, "data");
                     if (base64Data.contains(",")) base64Data = base64Data.split(",")[1];
                     
                     String fileName = System.currentTimeMillis() + "_book.pdf";
@@ -913,11 +866,11 @@ public class SchoolServer {
                 String body = buffer.toString("UTF-8");
 
                 try {
-                    String name = extract(body, "name");
-                    String email = extract(body, "email");
-                    String mobile = extract(body, "mobile");
-                    String subject = extract(body, "subject");
-                    String message = extract(body, "message");
+                    String name = extractValue(body, "name");
+                    String email = extractValue(body, "email");
+                    String mobile = extractValue(body, "mobile");
+                    String subject = extractValue(body, "subject");
+                    String message = extractValue(body, "message");
 
                     try (Connection conn = getConnection();
                          PreparedStatement pstmt = conn.prepareStatement("INSERT INTO enquiries (name, email, mobile, subject, message) VALUES (?, ?, ?, ?, ?)")) {
@@ -996,9 +949,9 @@ public class SchoolServer {
                 String body = br.lines().collect(Collectors.joining());
                 
                 try {
-                    String studentName = extract(body, "name");
-                    String studentClass = extract(body, "class");
-                    String mobile = extract(body, "mobile");
+                    String studentName = extractValue(body, "name");
+                    String studentClass = extractValue(body, "class");
+                    String mobile = extractValue(body, "mobile");
                     
                     try (Connection conn = getConnection();
                          PreparedStatement pstmt = conn.prepareStatement("INSERT INTO applications (student_name, student_class, mobile, data_json) VALUES (?, ?, ?, ?)")) {
@@ -1147,16 +1100,6 @@ public class SchoolServer {
             }
             exchange.getResponseBody().close();
         }
-
-        private String extractValue(String json, String key) {
-            String pattern = "\"" + key + "\":\"";
-            int start = json.indexOf(pattern);
-            if (start == -1) return "";
-            start += pattern.length();
-            int end = json.indexOf("\"", start);
-            if (end == -1) return "";
-            return json.substring(start, end);
-        }
     }
 
 
@@ -1198,9 +1141,9 @@ public class SchoolServer {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
                 String body = reader.lines().collect(Collectors.joining());
                 try {
-                    String title = extract(body, "title");
-                    String content = extract(body, "content");
-                    String category = extract(body, "category");
+                    String title = extractValue(body, "title");
+                    String content = extractValue(body, "content");
+                    String category = extractValue(body, "category");
                     
                     try (Connection conn = getConnection();
                          PreparedStatement pstmt = conn.prepareStatement("INSERT INTO notifications (title, content, category) VALUES (?, ?, ?)")) {
@@ -1313,14 +1256,14 @@ public class SchoolServer {
                 String body = buffer.toString("UTF-8");
 
                 try {
-                    String name = extract(body, "name");
-                    String father = extract(body, "father_name");
-                    String sClass = extract(body, "student_class");
-                    String roll = extract(body, "roll_no");
-                    String dob = extract(body, "dob");
-                    String blood = extract(body, "blood_group");
-                    String address = extract(body, "address");
-                    String photoBase64 = extract(body, "photo");
+                    String name = extractValue(body, "name");
+                    String father = extractValue(body, "father_name");
+                    String sClass = extractValue(body, "student_class");
+                    String roll = extractValue(body, "roll_no");
+                    String dob = extractValue(body, "dob");
+                    String blood = extractValue(body, "blood_group");
+                    String address = extractValue(body, "address");
+                    String photoBase64 = extractValue(body, "photo");
                     
                     String fileName = "student_default.jpg";
                     if (photoBase64.startsWith("data:image")) {
@@ -1358,16 +1301,6 @@ public class SchoolServer {
                 }
             }
             exchange.getResponseBody().close();
-        }
-
-        private String extract(String json, String key) {
-            String pattern = "\"" + key + "\":\"";
-            int start = json.indexOf(pattern);
-            if (start == -1) return "";
-            start += pattern.length();
-            int end = json.indexOf("\"", start);
-            if (end == -1) return "";
-            return json.substring(start, end);
         }
     }
 
@@ -1417,9 +1350,9 @@ public class SchoolServer {
             else if (method.equalsIgnoreCase("POST")) {
                 String body = new String(exchange.getRequestBody().readAllBytes(), "UTF-8");
                 try {
-                    String roll = extract(body, "roll_no");
-                    String name = extract(body, "student_name");
-                    String sClass = extract(body, "student_class");
+                    String roll = extractValue(body, "roll_no");
+                    String name = extractValue(body, "student_name");
+                    String sClass = extractValue(body, "student_class");
                     
                     // Smarter subjects extraction
                     String subjects = "{}";
@@ -1436,8 +1369,8 @@ public class SchoolServer {
                         }
                     }
                     
-                    int total = Integer.parseInt(extract(body, "total_marks"));
-                    int obtained = Integer.parseInt(extract(body, "obtained_marks"));
+                    int total = Integer.parseInt(extractValue(body, "total_marks"));
+                    int obtained = Integer.parseInt(extractValue(body, "obtained_marks"));
                     double percentage = (double)obtained / total * 100;
                     String status = percentage >= 33 ? "PASS" : "FAIL";
                     String grade = percentage >= 90 ? "A+" : percentage >= 75 ? "A" : percentage >= 60 ? "B" : percentage >= 45 ? "C" : "D";
@@ -1479,36 +1412,33 @@ public class SchoolServer {
             }
             exchange.getResponseBody().close();
         }
+    }
 
-        private String extract(String json, String key) {
-            String quoteKey = "\"" + key + "\":";
-            int keyIndex = json.indexOf(quoteKey);
-            if (keyIndex == -1) return "";
+    // --- Global Helper ---
+    public static String extractValue(String json, String key) {
+        try {
+            String search = "\"" + key + "\":";
+            int startPos = json.indexOf(search);
+            if (startPos == -1) return "";
             
-            int start = keyIndex + quoteKey.length();
+            int valueStart = startPos + search.length();
             // Skip whitespace
-            while (start < json.length() && Character.isWhitespace(json.charAt(start))) start++;
+            while (valueStart < json.length() && (json.charAt(valueStart) == ' ' || json.charAt(valueStart) == '\t')) valueStart++;
             
-            if (start < json.length() && json.charAt(start) == '\"') {
-                // String value
-                int end = json.indexOf("\"", start + 1);
-                if (end == -1) return "";
-                return json.substring(start + 1, end);
+            if (valueStart < json.length() && json.charAt(valueStart) == '\"') {
+                // It's a string
+                int quoteStart = valueStart + 1;
+                int quoteEnd = json.indexOf("\"", quoteStart);
+                if (quoteEnd == -1) return "";
+                return json.substring(quoteStart, quoteEnd);
             } else {
-                // Number or boolean value
-                int end = start;
-                while (end < json.length() && (Character.isDigit(json.charAt(end)) || json.charAt(end) == '.' || json.charAt(end) == '-')) end++;
-                if (end == start) {
-                    // Maybe it's stopped by a comma or brace
-                    int comma = json.indexOf(",", start);
-                    int brace = json.indexOf("}", start);
-                    if (comma == -1) end = brace;
-                    else if (brace == -1) end = comma;
-                    else end = Math.min(comma, brace);
-                }
-                if (end == -1) return "";
-                return json.substring(start, end).trim();
+                // It's a number, boolean or null
+                int end = valueStart;
+                while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '}' && json.charAt(end) != ']' && !Character.isWhitespace(json.charAt(end))) end++;
+                return json.substring(valueStart, end).trim().replace("\"", "");
             }
+        } catch (Exception e) {
+            return "";
         }
     }
 }
