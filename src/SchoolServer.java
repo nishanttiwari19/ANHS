@@ -82,7 +82,7 @@ public class SchoolServer {
                         "roll_no VARCHAR(50), " +
                         "dob DATE, " +
                         "blood_group VARCHAR(10), " +
-                        "photo VARCHAR(255), " +
+                        "photo LONGTEXT, " +
                         "address TEXT, " +
                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
                     
@@ -108,7 +108,7 @@ public class SchoolServer {
 
                     // 4. Principal Profile
                     stmt.execute("CREATE TABLE IF NOT EXISTS principal_profile (" +
-                        "id INT PRIMARY KEY DEFAULT 1, name VARCHAR(255), quote TEXT, message TEXT, photo VARCHAR(255), seal_photo VARCHAR(255), signature_photo VARCHAR(255))");
+                        "id INT PRIMARY KEY DEFAULT 1, name VARCHAR(255), quote TEXT, message TEXT, photo LONGTEXT, seal_photo LONGTEXT, signature_photo LONGTEXT)");
                     stmt.execute("INSERT IGNORE INTO principal_profile (id, name, quote, message, photo) VALUES (1, 'Principal Name', 'Quote...', 'Msg...', 'default_principal.jpg')");
                     
                     // 5. Books (Library)
@@ -141,11 +141,15 @@ public class SchoolServer {
                     stmt.execute("CREATE TABLE IF NOT EXISTS testimonials (" +
                         "id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), relation VARCHAR(255), message TEXT)");
 
-                    // 12. Faculty (MISSING PREVIOUSLY)
+                    // 12. Faculty
                     stmt.execute("CREATE TABLE IF NOT EXISTS faculty (" +
-                        "id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), photo VARCHAR(255))");
+                        "id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), photo LONGTEXT)");
+                    
+                    // 13. Gallery (NEW for Persistence)
+                    stmt.execute("CREATE TABLE IF NOT EXISTS gallery (" +
+                        "id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), data LONGTEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
 
-                    // 13. Vision & Mission (MISSING PREVIOUSLY)
+                    // 14. Vision & Mission
                     stmt.execute("CREATE TABLE IF NOT EXISTS vision_mission (" +
                         "id INT PRIMARY KEY DEFAULT 1, content TEXT)");
                     stmt.execute("INSERT IGNORE INTO vision_mission (id, content) VALUES (1, 'To provide quality education...')");
@@ -304,7 +308,6 @@ public class SchoolServer {
             }
 
             if (method.equalsIgnoreCase("GET")) {
-                // ... Existing GET logic ...
                 List<String> list = new ArrayList<>();
                 try (Connection conn = getConnection();
                      Statement stmt = conn.createStatement();
@@ -320,29 +323,23 @@ public class SchoolServer {
                 exchange.getResponseBody().write(bytes);
             } 
             else if (method.equalsIgnoreCase("POST")) {
-                if (!isAdminSession(exchange)) { exchange.sendResponseHeaders(401, -1); exchange.close(); return; }
                 InputStream is = exchange.getRequestBody();
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 int nRead;
-                byte[] data = new byte[16384];
-                while ((nRead = is.read(data, 0, data.length)) != -1) {
-                    buffer.write(data, 0, nRead);
+                byte[] dataBuf = new byte[16384];
+                while ((nRead = is.read(dataBuf, 0, dataBuf.length)) != -1) {
+                    buffer.write(dataBuf, 0, nRead);
                 }
                 String body = buffer.toString("UTF-8");
 
                 try {
                     String name = extractValue(body, "name");
                     String base64Data = extractValue(body, "photo");
-                    if (base64Data.contains(",")) base64Data = base64Data.split(",")[1];
-                    
-                    String fileName = System.currentTimeMillis() + "_faculty.jpg";
-                    byte[] imageData = java.util.Base64.getDecoder().decode(base64Data.trim());
-                    Files.write(Paths.get(FACULTY_DIR, fileName), imageData);
                     
                     try (Connection conn = getConnection();
                          PreparedStatement pstmt = conn.prepareStatement("INSERT INTO faculty (name, photo) VALUES (?, ?)")) {
                         pstmt.setString(1, name);
-                        pstmt.setString(2, fileName);
+                        pstmt.setString(2, base64Data);
                         pstmt.executeUpdate();
                     }
                     exchange.sendResponseHeaders(201, 0);
@@ -360,18 +357,7 @@ public class SchoolServer {
             }
             exchange.getResponseBody().close();
         }
-
-        private String extract(String json, String key) {
-            String pattern = "\"" + key + "\":\"";
-            int start = json.indexOf(pattern);
-            if (start == -1) return "";
-            start += pattern.length();
-            int end = json.indexOf("\"", start);
-            if (end == -1) return "";
-            return json.substring(start, end);
-        }
     }
-
     static class VisionHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -586,7 +572,7 @@ public class SchoolServer {
                             rs.getString("name"), 
                             rs.getString("quote").replace("\"", "\\\"").replace("\n", "\\n"),
                             rs.getString("message").replace("\"", "\\\"").replace("\n", "\\n"),
-                            rs.getString("photo"),
+                            rs.getString("photo") == null ? "" : rs.getString("photo"),
                             rs.getString("seal_photo") == null ? "" : rs.getString("seal_photo"),
                             rs.getString("signature_photo") == null ? "" : rs.getString("signature_photo"));
                     }
@@ -599,9 +585,9 @@ public class SchoolServer {
                 InputStream is = exchange.getRequestBody();
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 int nRead;
-                byte[] data = new byte[16384];
-                while ((nRead = is.read(data, 0, data.length)) != -1) {
-                    buffer.write(data, 0, nRead);
+                byte[] dataBuf = new byte[16384];
+                while ((nRead = is.read(dataBuf, 0, dataBuf.length)) != -1) {
+                    buffer.write(dataBuf, 0, nRead);
                 }
                 String body = buffer.toString("UTF-8");
 
@@ -609,65 +595,40 @@ public class SchoolServer {
                     String name = extractValue(body, "name");
                     String quote = extractValue(body, "quote");
                     String message = extractValue(body, "message");
-                    String photoBase64 = extractValue(body, "photo");
+                    String photoBase64 = extractValue(body, "photo"); // These are Base64
                     String sealBase64 = extractValue(body, "seal");
                     String signBase64 = extractValue(body, "signature");
 
-                    String photoFile = "";
-                    String sealFile = "";
-                    String signFile = "";
-
-                    // Fetch current values first
+                    // Fetch current values to keep them if new ones are empty
+                    String currentPhoto = "", currentSeal = "", currentSign = "";
                     try (Connection conn = getConnection();
                          PreparedStatement pstmt = conn.prepareStatement("SELECT photo, seal_photo, signature_photo FROM principal_profile WHERE id = 1")) {
                         ResultSet rs = pstmt.executeQuery();
                         if (rs.next()) {
-                            photoFile = rs.getString("photo");
-                            sealFile = rs.getString("seal_photo");
-                            signFile = rs.getString("signature_photo");
+                            currentPhoto = rs.getString("photo");
+                            currentSeal = rs.getString("seal_photo");
+                            currentSign = rs.getString("signature_photo");
                         }
                     }
 
-                    if (photoBase64.startsWith("data:image")) {
-                        if (photoBase64.contains(",")) photoBase64 = photoBase64.split(",")[1];
-                        photoFile = "principal_" + System.currentTimeMillis() + ".jpg";
-                        Files.write(Paths.get(FACULTY_DIR, photoFile), java.util.Base64.getDecoder().decode(photoBase64.trim()));
-                    }
-                    if (sealBase64.startsWith("data:image")) {
-                        if (sealBase64.contains(",")) sealBase64 = sealBase64.split(",")[1];
-                        sealFile = "seal_" + System.currentTimeMillis() + ".png";
-                        Files.write(Paths.get(FACULTY_DIR, sealFile), java.util.Base64.getDecoder().decode(sealBase64.trim()));
-                    }
-                    if (signBase64.startsWith("data:image")) {
-                        if (signBase64.contains(",")) signBase64 = signBase64.split(",")[1];
-                        signFile = "sign_" + System.currentTimeMillis() + ".png";
-                        Files.write(Paths.get(FACULTY_DIR, signFile), java.util.Base64.getDecoder().decode(signBase64.trim()));
-                    }
-                    
+                    String finalPhoto = (photoBase64 != null && !photoBase64.isEmpty()) ? photoBase64 : currentPhoto;
+                    String finalSeal = (sealBase64 != null && !sealBase64.isEmpty()) ? sealBase64 : currentSeal;
+                    String finalSign = (signBase64 != null && !signBase64.isEmpty()) ? signBase64 : currentSign;
+
                     try (Connection conn = getConnection();
                          PreparedStatement pstmt = conn.prepareStatement("UPDATE principal_profile SET name=?, quote=?, message=?, photo=?, seal_photo=?, signature_photo=? WHERE id=1")) {
                         pstmt.setString(1, name);
                         pstmt.setString(2, quote);
                         pstmt.setString(3, message);
-                        pstmt.setString(4, photoFile);
-                        pstmt.setString(5, sealFile);
-                        pstmt.setString(6, signFile);
+                        pstmt.setString(4, finalPhoto);
+                        pstmt.setString(5, finalSeal);
+                        pstmt.setString(6, finalSign);
                         pstmt.executeUpdate();
                     }
                     exchange.sendResponseHeaders(200, 0);
                 } catch (Exception e) { e.printStackTrace(); exchange.sendResponseHeaders(400, -1); }
             }
             exchange.getResponseBody().close();
-        }
-
-        private String extract(String json, String key) {
-            String pattern = "\"" + key + "\":\"";
-            int start = json.indexOf(pattern);
-            if (start == -1) return "";
-            start += pattern.length();
-            int end = json.indexOf("\"", start);
-            if (end == -1) return "";
-            return json.substring(start, end);
         }
     }
 
@@ -1046,15 +1007,16 @@ public class SchoolServer {
             }
 
             if (method.equalsIgnoreCase("GET")) {
-                File dir = new File(GALLERY_DIR);
-                String[] files = dir.list();
-                String json = "[]";
-                if (files != null) {
-                    json = "[" + java.util.Arrays.stream(files)
-                            .filter(f -> f.toLowerCase().endsWith(".jpg") || f.toLowerCase().endsWith(".png") || f.toLowerCase().endsWith(".jpeg"))
-                            .map(f -> "\"" + f + "\"")
-                            .collect(Collectors.joining(",")) + "]";
-                }
+                List<String> list = new ArrayList<>();
+                try (Connection conn = getConnection();
+                     Statement stmt = conn.createStatement();
+                     ResultSet rs = stmt.executeQuery("SELECT * FROM gallery ORDER BY created_at DESC")) {
+                    while (rs.next()) {
+                        list.add(String.format("{\"id\":%d, \"name\":\"%s\", \"data\":\"%s\"}",
+                            rs.getLong("id"), rs.getString("name"), rs.getString("data")));
+                    }
+                } catch (Exception e) { e.printStackTrace(); }
+                String json = "[" + String.join(",", list) + "]";
                 byte[] bytes = json.getBytes();
                 exchange.sendResponseHeaders(200, bytes.length);
                 exchange.getResponseBody().write(bytes);
@@ -1063,26 +1025,27 @@ public class SchoolServer {
                 InputStream is = exchange.getRequestBody();
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 int nRead;
-                byte[] data = new byte[16384];
-                while ((nRead = is.read(data, 0, data.length)) != -1) {
-                    buffer.write(data, 0, nRead);
+                byte[] dataBuf = new byte[16384];
+                while ((nRead = is.read(dataBuf, 0, dataBuf.length)) != -1) {
+                    buffer.write(dataBuf, 0, nRead);
                 }
                 String body = buffer.toString("UTF-8");
                 
-                // More robust Base64 Extraction
                 try {
                     String fileName = extractValue(body, "name");
                     String base64Data = extractValue(body, "data");
                     
-                    if (base64Data.contains(",")) base64Data = base64Data.split(",")[1];
-                    
-                    byte[] imageData = java.util.Base64.getDecoder().decode(base64Data.trim());
-                    Files.write(Paths.get(GALLERY_DIR, fileName), imageData);
+                    try (Connection conn = getConnection();
+                         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO gallery (name, data) VALUES (?, ?)")) {
+                        pstmt.setString(1, fileName);
+                        pstmt.setString(2, base64Data);
+                        pstmt.executeUpdate();
+                    }
                     
                     String resp = "{\"status\":\"uploaded\"}";
                     exchange.sendResponseHeaders(201, resp.length());
                     exchange.getResponseBody().write(resp.getBytes());
-                    System.out.println(">>> Photo Uploaded: " + fileName);
+                    System.out.println(">>> Photo Saved to DB: " + fileName);
                 } catch (Exception e) {
                     e.printStackTrace();
                     exchange.sendResponseHeaders(400, -1);
@@ -1090,12 +1053,14 @@ public class SchoolServer {
             }
             else if (method.equalsIgnoreCase("DELETE")) {
                 String path = exchange.getRequestURI().getPath();
-                String fileName = path.substring(path.lastIndexOf('/') + 1);
-                File file = new File(GALLERY_DIR, fileName);
-                if (file.exists() && file.delete()) {
+                String idStr = path.substring(path.lastIndexOf('/') + 1);
+                try (Connection conn = getConnection();
+                     PreparedStatement pstmt = conn.prepareStatement("DELETE FROM gallery WHERE id = ?")) {
+                    pstmt.setLong(1, Long.parseLong(idStr));
+                    pstmt.executeUpdate();
                     exchange.sendResponseHeaders(204, -1);
-                } else {
-                    exchange.sendResponseHeaders(404, -1);
+                } catch (Exception e) {
+                    exchange.sendResponseHeaders(400, -1);
                 }
             }
             exchange.getResponseBody().close();
@@ -1235,7 +1200,7 @@ public class SchoolServer {
                                 rs.getLong("id"), rs.getString("name"), rs.getString("father_name"), 
                                 rs.getString("student_class"), rs.getString("roll_no"), 
                                 rs.getString("dob"), rs.getString("blood_group"), 
-                                rs.getString("photo"), rs.getString("address").replace("\n", "\\n")));
+                                rs.getString("photo") == null ? "" : rs.getString("photo"), rs.getString("address").replace("\n", "\\n")));
                         }
                     }
                 } catch (Exception e) { e.printStackTrace(); }
@@ -1249,9 +1214,9 @@ public class SchoolServer {
                 InputStream is = exchange.getRequestBody();
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 int nRead;
-                byte[] data = new byte[16384];
-                while ((nRead = is.read(data, 0, data.length)) != -1) {
-                    buffer.write(data, 0, nRead);
+                byte[] dataBuf = new byte[16384];
+                while ((nRead = is.read(dataBuf, 0, dataBuf.length)) != -1) {
+                    buffer.write(dataBuf, 0, nRead);
                 }
                 String body = buffer.toString("UTF-8");
 
@@ -1265,14 +1230,6 @@ public class SchoolServer {
                     String address = extractValue(body, "address");
                     String photoBase64 = extractValue(body, "photo");
                     
-                    String fileName = "student_default.jpg";
-                    if (photoBase64.startsWith("data:image")) {
-                        if (photoBase64.contains(",")) photoBase64 = photoBase64.split(",")[1];
-                        fileName = "student_" + System.currentTimeMillis() + ".jpg";
-                        byte[] imageData = java.util.Base64.getDecoder().decode(photoBase64.trim());
-                        Files.write(Paths.get(FACULTY_DIR, fileName), imageData);
-                    }
-                    
                     try (Connection conn = getConnection();
                          PreparedStatement pstmt = conn.prepareStatement("INSERT INTO students (name, father_name, student_class, roll_no, dob, blood_group, photo, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
                         pstmt.setString(1, name);
@@ -1281,7 +1238,7 @@ public class SchoolServer {
                         pstmt.setString(4, roll);
                         pstmt.setString(5, dob);
                         pstmt.setString(6, blood);
-                        pstmt.setString(7, fileName);
+                        pstmt.setString(7, photoBase64);
                         pstmt.setString(8, address);
                         pstmt.executeUpdate();
                     }

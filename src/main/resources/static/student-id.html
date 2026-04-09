@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="vFRNPhSDqF4_HHDW8wiS_suyt8Sd9mI5t532FJw0jqU" />
     <title>Get Student ID Card - Adarsh Narmada Hr Sec School Gangeo</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -148,14 +149,14 @@
                 document.getElementById('view-dob').textContent = data.dob;
                 document.getElementById('view-blood').textContent = data.blood_group || '-';
                 document.getElementById('view-address').textContent = data.address;
-                document.getElementById('view-photo').src = `img/faculty/${data.photo}`;
+                document.getElementById('view-photo').src = data.photo;
 
                 // Load Branding
                 try {
                     const brandResp = await fetch('/api/principal-message');
                     const brandData = await brandResp.json();
                     if(brandData.signature) {
-                        document.getElementById('view-sign').src = `img/faculty/${brandData.signature}`;
+                        document.getElementById('view-sign').src = brandData.signature;
                     }
                 } catch(e) {}
 

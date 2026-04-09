@@ -51,7 +51,7 @@ async function loadPrincipalHome() {
         pName.innerText = data.name || "Principal Name";
         pQuote.innerHTML = data.quote ? `"${data.quote}"` : "Education is the manifestation of perfection...";
         pPreview.innerHTML = data.message ? data.message.substring(0, 250).replace(/<[^>]*>?/gm, '') + "..." : "Loading...";
-        if (data.photo) pImg.src = `img/faculty/${data.photo}`;
+        if (data.photo) pImg.src = data.photo;
     } catch (error) {
         console.log('Principal home skip');
     }
@@ -181,7 +181,7 @@ async function loadGallery() {
 
         grid.innerHTML = images.map(img => `
             <div class="testimonial-card" style="padding: 10px; padding-top: 10px;">
-                <img src="img/gallery/${img}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px;">
+                <img src="${img.data}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px;">
             </div>
         `).join('');
     } catch (error) {
@@ -199,8 +199,8 @@ async function loadAdminGallery() {
 
         list.innerHTML = images.map(img => `
             <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; text-align: center;">
-                <img src="img/gallery/${img}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 3px; margin-bottom: 10px;">
-                <button onclick="deleteGalleryImage('${img}')" style="background: var(--red); color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">Delete</button>
+                <img src="${img.data}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 3px; margin-bottom: 10px;">
+                <button onclick="deleteGalleryImage('${img.id}')" style="background: var(--red); color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">Delete</button>
             </div>
         `).join('');
     } catch (error) {
@@ -337,15 +337,15 @@ async function loadPrincipalMsgAdmin() {
         if (quoteInput) quoteInput.value = data.quote || "";
         if (msgInput) msgInput.value = data.message || "";
         if (photoV && data.photo) {
-            photoV.src = `img/faculty/${data.photo}`;
+            photoV.src = data.photo;
             photoV.style.display = 'block';
         }
         if (sealV && data.seal) {
-            sealV.src = `img/faculty/${data.seal}`;
+            sealV.src = data.seal;
             sealV.style.display = 'block';
         }
         if (signV && data.signature) {
-            signV.src = `img/faculty/${data.signature}`;
+            signV.src = data.signature;
             signV.style.display = 'block';
         }
     } catch (error) {
@@ -500,7 +500,7 @@ async function loadFaculty() {
 
         grid.innerHTML = data.map(f => `
             <div class="faculty-card">
-                <img src="img/faculty/${f.photo}" alt="${f.name}" class="faculty-img">
+                <img src="${f.photo}" alt="${f.name}" class="faculty-img">
                 <div class="faculty-name">${f.name}</div>
                 <div style="color: #666; font-size: 0.8rem;">Dedicated Teacher</div>
             </div>
@@ -520,7 +520,7 @@ async function loadFacultyAdmin() {
 
         list.innerHTML = data.map(f => `
             <div style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; text-align: center; background: #fff;">
-                <img src="img/faculty/${f.photo}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
+                <img src="${f.photo}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
                 <div style="font-weight: 600; margin-bottom: 10px; font-size: 0.9rem;">${f.name}</div>
                 <button onclick="deleteFaculty('${f.id}')" style="background: var(--red); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.75rem;">Remove</button>
             </div>
@@ -716,7 +716,7 @@ async function loadStudents() {
             card.style.borderRadius = '10px';
             card.innerHTML = `
                 <div style="display: flex; gap: 15px; align-items: start;">
-                    <img src="img/faculty/${s.photo}" style="width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid #ddd;">
+                    <img src="${s.photo}" style="width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid #ddd;">
                     <div style="flex: 1;">
                         <h4 style="margin: 0; color: var(--navy);">${s.name}</h4>
                         <p style="font-size: 0.8rem; color: #666; margin: 3px 0;">Class: ${s.student_class} | Roll: ${s.roll_no}</p>
@@ -796,14 +796,14 @@ async function openIDCardPreview(index) {
     document.getElementById('card-dob').textContent = s.dob;
     document.getElementById('card-blood').textContent = s.blood_group || '-';
     document.getElementById('card-address').textContent = s.address;
-    document.getElementById('card-photo').src = `img/faculty/${s.photo}`;
+    document.getElementById('card-photo').src = s.photo;
     
     // Load official signature
     try {
         const resp = await fetch('/api/principal-message');
         const data = await resp.json();
         if (data.signature) {
-            document.getElementById('card-sign').src = `img/faculty/${data.signature}`;
+            document.getElementById('card-sign').src = data.signature;
             document.getElementById('card-sign').style.opacity = '1';
         }
     } catch(e) {}
