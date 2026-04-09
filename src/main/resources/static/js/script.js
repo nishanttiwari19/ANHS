@@ -36,6 +36,43 @@ async function loadNotifications() {
     }
 }
 
+// Fetch and display infinite scrolling ticker
+async function loadTicker() {
+    const tickerList = document.getElementById('ticker-list');
+    if (!tickerList) return;
+
+    try {
+        const response = await fetch(API_BASE);
+        const data = await response.json();
+
+        // Filter for "Flash News" category, or use all if none found
+        let flashNews = data.filter(n => n.category === 'Flash News');
+        
+        // if no flash news, take latest 3 recent updates
+        if (flashNews.length === 0) {
+            flashNews = data.slice(0, 3);
+        }
+
+        if (flashNews.length === 0) {
+            tickerList.innerHTML = '<div class="ticker-item">Welcome to Adarsh Narmada Hr Sec School Gangeo - Stay updated!</div>';
+            return;
+        }
+
+        const itemsHtml = flashNews.map(n => `<div class="ticker-item">${n.title} - ${n.content.substring(0, 100)}...</div>`).join('');
+        
+        // Duplicate content for seamless infinite scroll
+        tickerList.innerHTML = itemsHtml + itemsHtml;
+        
+        // Adjust animation speed based on content length
+        const charCount = (itemsHtml + itemsHtml).length;
+        const duration = Math.max(20, charCount / 15); // Dynamic speed
+        tickerList.style.animationDuration = `${duration}s`;
+        
+    } catch (error) {
+        console.error('Error loading ticker:', error);
+    }
+}
+
 async function loadPrincipalHome() {
     const pName = document.getElementById('p-home-name');
     const pImg = document.getElementById('p-home-img');
@@ -681,6 +718,7 @@ function showSection(sectionId) {
 // Update Initialize
 document.addEventListener('DOMContentLoaded', () => {
     dynamicizeContactInfo();
+    loadTicker();
     loadNotifications();
     loadGallery();
     loadTestimonials();

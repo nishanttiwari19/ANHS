@@ -854,3 +854,72 @@ button.primary {
     justify-content: space-between;
     align-items: flex-end;
 }
+
+/* --- Infinite Scrolling Ticker --- */
+.ticker-wrap {
+    display: flex;
+    background: var(--navy);
+    padding: 10px 0;
+    overflow: hidden;
+    border-bottom: 2px solid var(--yellow);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 100;
+}
+
+.ticker-title {
+    background: var(--yellow);
+    color: var(--navy);
+    padding: 0 25px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 10px 0 15px rgba(0,0,0,0.3);
+    clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
+}
+
+.ticker-content {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+.ticker {
+    display: inline-flex;
+    animation: scroll-ticker 40s linear infinite;
+    padding-left: 20px;
+}
+
+.ticker:hover {
+    animation-play-state: paused;
+}
+
+.ticker-item {
+    display: inline-block;
+    padding: 0 40px;
+    color: white;
+    font-weight: 500;
+    font-size: 0.95rem;
+    position: relative;
+}
+
+.ticker-item::after {
+    content: " •\;
+ position: absolute;
+ right: 0;
+ color: var(--yellow);
+ font-size: 1.5rem;
+ top: -2px;
+}
+
+@keyframes scroll-ticker {
+ 0% { transform: translateX(0); }
+ 100% { transform: translateX(-50%); }
+}
