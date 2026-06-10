@@ -1051,41 +1051,100 @@ button.primary {
  100% { transform: translateX(-50%); }
 }
 
+
 /* --- Mobile Responsiveness --- */
 @media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+    
     .top-header {
         flex-direction: column;
         text-align: center;
         gap: 10px;
+        padding: 10px;
     }
     .school-info {
         justify-content: center;
         flex-wrap: wrap;
+        font-size: 0.9rem;
     }
     .main-nav {
         padding: 15px 10px;
         flex-direction: column;
         gap: 15px;
     }
+    .logo {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px !important;
+    }
+    .logo img {
+        height: 60px !important;
+    }
+    .logo h1 {
+        font-size: 1.2rem !important;
+        line-height: 1.4;
+    }
     .nav-links {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        gap: 10px;
     }
+    .nav-links li {
+        width: 100%;
+    }
+    .nav-links a {
+        display: block;
+        padding: 10px;
+        border-radius: 5px;
+        background: rgba(255,255,255,0.05);
+    }
+    .dropdown-content {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        background: transparent;
+        padding-left: 0;
+        display: none;
+    }
+    .dropdown:hover .dropdown-content {
+        display: flex;
+        flex-direction: column;
+    }
+    
     .hero {
         height: auto;
-        padding: 100px 20px;
+        padding: 60px 15px;
     }
     .hero-content h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
+        line-height: 1.3;
     }
     .hero-content p {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
-    .grid {
-        grid-template-columns: 1fr;
+    
+    .grid, .about-grid, .news-container, .testimonial-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px;
     }
+    .about-text h2 {
+        font-size: 2rem !important;
+    }
+    
+    .admissions-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 30px 15px;
+    }
+    .admissions-banner h2 {
+        font-size: 1.6rem !important;
+    }
+    
     .footer-content {
         grid-template-columns: 1fr;
         text-align: center;
@@ -1099,9 +1158,14 @@ button.primary {
         justify-content: center;
         clip-path: none;
         padding: 10px;
+        font-size: 0.8rem;
+    }
+    .ticker-item {
+        font-size: 0.85rem;
+        padding: 0 20px;
     }
     .section-title h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     .admin-layout {
         flex-direction: column;
@@ -1116,8 +1180,11 @@ button.primary {
         margin-left: 0;
         padding: 15px;
     }
+    #principal-home-photo img {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        display: block;
+    }
 }
-
-
-
 
