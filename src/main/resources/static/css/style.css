@@ -457,6 +457,8 @@ footer {
 }
 
 input, textarea {
+    background: var(--navy-light);
+    color: var(--text-dark);
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
@@ -537,7 +539,7 @@ button.primary {
 .form-field input, .form-field select {
     width: 100%;
     padding: 10px;
-    background: #edf2f7;
+    background: var(--navy-light); color: var(--text-dark);
     border: 1px solid #cbd5e0;
     border-radius: 4px;
     color: #2d3748;
@@ -545,7 +547,7 @@ button.primary {
 
 .form-field input:focus {
     outline: 2px solid var(--yellow);
-    background: #fff;
+    background: var(--navy-light);
 }
 
 .checkbox-group {
@@ -629,7 +631,7 @@ button.primary {
 }
 
 .content-box {
-    background: white;
+    background: var(--navy-light);
     padding: 30px;
     border-radius: 8px;
     box-shadow: var(--shadow);
@@ -637,7 +639,7 @@ button.primary {
 }
 
 .sidebar-box {
-    background: white;
+    background: var(--navy-light);
     padding: 30px;
     border-radius: 8px;
     box-shadow: var(--shadow);
@@ -667,7 +669,7 @@ button.primary {
 .review-form-container {
     max-width: 800px;
     margin: 40px auto;
-    background: white;
+    background: var(--navy-light);
     padding: 30px;
     border-radius: 8px;
     box-shadow: var(--shadow);
@@ -676,7 +678,7 @@ button.primary {
 .review-form textarea {
     width: 100%;
     padding: 15px;
-    background: #f8f9fa;
+    background: var(--navy-light); color: var(--text-dark);
     border: 1px solid #ddd;
     border-radius: 5px;
     margin-bottom: 20px;
@@ -697,7 +699,7 @@ button.primary {
 }
 
 .admin-item-card {
-    background: #fff;
+    background: var(--navy-light);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -839,7 +841,7 @@ button.primary {
 }
 
 .admin-card {
-    background: white;
+    background: var(--navy-light);
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -863,10 +865,7 @@ button.primary {
 }
 
 /* --- ID Card Template Styles --- */
-.id-card-template {
-    width: 320px;
-    height: 480px;
-    background: white;
+.id-card-template {`r`n    width: 320px;`r`n    height: 480px;`r`n    background: white;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     overflow: hidden;
@@ -932,7 +931,7 @@ button.primary {
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 15px;
-    background: #f0f2f5;
+    background: var(--navy);
 }
 
 .id-card-photo-wrap img {
@@ -1118,4 +1117,7 @@ button.primary {
         padding: 15px;
     }
 }
+
+
+
 

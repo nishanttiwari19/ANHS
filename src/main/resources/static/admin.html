@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,12 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
-<body style="background: #f0f2f5;">
+<body style="background: var(--navy);">
 
     <div id="login-section" class="admin-container" style="margin-top: 100px; max-width: 400px;">
         <div style="text-align: center; margin-bottom: 30px;">
             <img src="img/logo.png" alt="School Logo" style="height: 80px; margin-bottom: 15px;">
-            <h2 style="font-size: 1.2rem; color: #666;">Login to your account</h2>
+            <h2 style="font-size: 1.2rem; color: #cbd5e1;">Login to your account</h2>
         </div>
         <form id="login-form">
             <div class="form-group">
@@ -130,7 +130,7 @@
             <!-- Gallery Dashboard -->
             <div id="gallery-dash" class="admin-card" style="display: none;">
                 <h3><i class="fas fa-upload"></i> Manage Photo Gallery</h3>
-                <div style="margin-bottom: 40px; padding: 20px; background: #f8fafc; border-radius: 10px;">
+                <div style="margin-bottom: 40px; padding: 20px; background: var(--navy-light); border-radius: 10px;">
                     <h4>Upload New Photo</h4>
                     <div class="form-group">
                         <input type="file" id="gallery-upload" accept="image/*">
@@ -153,7 +153,7 @@
             <!-- Faculty Dashboard -->
             <div id="faculty-dash" class="admin-card" style="display: none;">
                 <h3><i class="fas fa-chalkboard-teacher"></i> Manage Faculty</h3>
-                <div style="margin-bottom: 40px; padding: 20px; background: #f8fafc; border-radius: 10px;">
+                <div style="margin-bottom: 40px; padding: 20px; background: var(--navy-light); border-radius: 10px;">
                     <div class="form-group">
                         <label>Teacher Name</label>
                         <input type="text" id="faculty-name-input" placeholder="e.g. Mr. John Doe" required>
@@ -241,7 +241,7 @@
             <!-- School Settings Dashboard -->
             <div id="settings-dash" class="admin-card" style="display: none;">
                 <h3><i class="fas fa-cogs"></i> School Settings & Contact Info</h3>
-                <p style="margin-bottom: 20px; color: #666;">Changes here will update all headers, footers, and contact sections across the website.</p>
+                <p style="margin-bottom: 20px; color: #cbd5e1;">Changes here will update all headers, footers, and contact sections across the website.</p>
                 
                 <div class="form-group">
                     <label>Official Email Address</label>
@@ -270,7 +270,7 @@
                 </div>
 
                 <!-- Add Student Form -->
-                <div id="add-student-form-wrap" style="display: none; background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
+                <div id="add-student-form-wrap" style="display: none; background: var(--navy-light); padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
                     <h4 style="margin-bottom: 20px;">Enter Student Details</h4>
                     <form id="student-form">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -322,7 +322,7 @@
 
             <!-- ID Card Preview Modal -->
             <div id="id-card-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; overscroll-behavior: contain;">
-                <div style="background: white; padding: 30px; border-radius: 15px; position: relative; max-height: 90vh; overflow-y: auto;">
+                <div style="background: var(--navy-light); padding: 30px; border-radius: 15px; position: relative; max-height: 90vh; overflow-y: auto;">
                     <button onclick="document.getElementById('id-card-modal').style.display='none'" style="position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
                     <h3 style="margin-bottom: 20px;">ID Card Preview</h3>
                     
@@ -376,7 +376,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                     <h3><i class="fas fa-poll-h"></i> Manage Student Results</h3>
                     <div style="display: flex; gap: 10px;">
-                        <button onclick="downloadExcelTemplate()" class="primary" style="background: #e2e8f0; color: #444; border: 1px solid #ccc;"><i class="fas fa-download"></i> Template</button>
+                        <button onclick="downloadExcelTemplate()" class="primary" style="background: #e2e8f0; color: #e2e8f0; border: 1px solid #ccc;"><i class="fas fa-download"></i> Template</button>
                         <button onclick="document.getElementById('excel-upload-input').click()" class="primary" style="background: #27ae60;"><i class="fas fa-file-excel"></i> Bulk Upload (Excel)</button>
                         <input type="file" id="excel-upload-input" style="display: none;" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(this)">
                         <button onclick="document.getElementById('add-result-form-wrap').style.display='block'" class="primary" style="background: var(--yellow); color: var(--navy);">+ Add Single Result</button>
@@ -384,7 +384,7 @@
                 </div>
 
                 <!-- Add Result Form -->
-                <div id="add-result-form-wrap" style="display: none; background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
+                <div id="add-result-form-wrap" style="display: none; background: var(--navy-light); padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
                     <h4 style="margin-bottom: 20px;">Enter Exam Results</h4>
                     <form id="result-form">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -430,7 +430,7 @@
 
                 <!-- Results List -->
                 <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse; background: var(--navy-light); border-radius: 10px; overflow: hidden;">
                         <thead style="background: var(--navy); color: white; text-align: left;">
                             <tr>
                                 <th style="padding: 15px;">Roll No</th>
@@ -457,7 +457,7 @@
                 </div>
 
                 <!-- Add Book Form -->
-                <div id="add-book-form-wrap" style="display: none; background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
+                <div id="add-book-form-wrap" style="display: none; background: var(--navy-light); padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
                     <h4 style="margin-bottom: 20px;">Upload Book Details</h4>
                     <form id="book-form">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -483,7 +483,7 @@
 
                 <!-- Books List -->
                 <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse; background: var(--navy-light); border-radius: 10px; overflow: hidden;">
                         <thead style="background: var(--navy); color: white; text-align: left;">
                             <tr>
                                 <th style="padding: 15px;">Title</th>
@@ -507,7 +507,7 @@
                 </div>
 
                 <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse; background: var(--navy-light); border-radius: 10px; overflow: hidden;">
                         <thead style="background: var(--navy); color: white; text-align: left;">
                             <tr>
                                 <th style="padding: 15px;">Date</th>
@@ -580,3 +580,4 @@
     </script>
 </body>
 </html>
+

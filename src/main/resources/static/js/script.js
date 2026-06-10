@@ -1,4 +1,4 @@
-const API_BASE = '/api/notifications';
+﻿const API_BASE = '/api/notifications';
 
 // Helper for authenticated requests
 function getAuthHeaders() {
@@ -16,7 +16,7 @@ async function loadNotifications() {
         const data = await response.json();
 
         if (data.length === 0) {
-            list.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No updates at the moment.</p>';
+            list.innerHTML = '<p style="text-align: center; color: #cbd5e1; padding: 20px;">No updates at the moment.</p>';
             return;
         }
 
@@ -107,7 +107,7 @@ async function loadAdminNotifications() {
             <div class="news-item" style="justify-content: space-between;">
                 <div>
                     <strong>${notif.title}</strong> (${notif.category})
-                    <p style="font-size: 0.9rem; color: #666;">${notif.content.substring(0, 100)}...</p>
+                    <p style="font-size: 0.9rem; color: #cbd5e1;">${notif.content.substring(0, 100)}...</p>
                 </div>
                 <button onclick="deleteNotification(${notif.id})" style="background: var(--red); color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer;">Delete</button>
             </div>
@@ -182,10 +182,10 @@ async function loadApplications() {
         }
 
         list.innerHTML = data.map(app => `
-            <div class="news-item" style="display: block; background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+            <div class="news-item" style="display: block; background: var(--navy-light); padding: 20px; border-radius: 8px; margin-bottom: 15px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                     <strong style="font-size: 1.1rem; color: var(--navy);">${app.name}</strong>
-                    <span style="color: #666; font-size: 0.8rem;">${new Date(app.timestamp).toLocaleString()}</span>
+                    <span style="color: #cbd5e1; font-size: 0.8rem;">${new Date(app.timestamp).toLocaleString()}</span>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem;">
                     <div><strong>Class:</strong> ${app.studentClass}</div>
@@ -212,7 +212,7 @@ async function loadGallery() {
         const images = await response.json();
 
         if (images.length === 0) {
-            grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: #666; padding: 40px;">No photos in the gallery yet.</p>';
+            grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: #cbd5e1; padding: 40px;">No photos in the gallery yet.</p>';
             return;
         }
 
@@ -308,10 +308,10 @@ async function loadCareers() {
         }
 
         list.innerHTML = data.map(app => `
-            <div class="news-item" style="display: block; background: #fffaf0; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 5px solid var(--navy);">
+            <div class="news-item" style="display: block; background: var(--navy-light); padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 5px solid var(--navy);">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                     <strong style="font-size: 1.1rem; color: var(--navy);">${app.name}</strong>
-                    <span style="color: #666; font-size: 0.8rem;">${new Date(app.timestamp).toLocaleString()}</span>
+                    <span style="color: #cbd5e1; font-size: 0.8rem;">${new Date(app.timestamp).toLocaleString()}</span>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem;">
                     <div><strong>Profile:</strong> ${app.profile}</div>
@@ -505,14 +505,14 @@ async function loadTestimonialsAdmin() {
                 <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
                     <div>
                         <strong style="color: var(--navy); font-size: 1.1rem;">${t.name}</strong>
-                        <div style="color: #666; font-size: 0.8rem;">${t.relation} | ${new Date(t.timestamp).toLocaleDateString()}</div>
+                        <div style="color: #cbd5e1; font-size: 0.8rem;">${t.relation} | ${new Date(t.timestamp).toLocaleDateString()}</div>
                     </div>
                     <div style="display: flex; gap: 10px;">
                         <button onclick="editTestimonial('${t.id}')" class="primary" style="background: var(--navy); padding: 5px 15px;">Edit</button>
                         <button onclick="deleteTestimonial('${t.id}')" class="primary" style="background: var(--red); padding: 5px 15px;">Delete</button>
                     </div>
                 </div>
-                <div id="t-text-${t.id}" style="font-style: italic; color: #4a5568;">"${t.message}"</div>
+                <div id="t-text-${t.id}" style="font-style: italic; color: #cbd5e1;">"${t.message}"</div>
             </div>
         `).join('');
     } catch (error) {
@@ -531,7 +531,7 @@ async function loadFaculty() {
         const data = await response.json();
 
         if (data.length === 0) {
-            grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: #666; padding: 40px;">Faculty profiles will appear here soon.</p>';
+            grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: #cbd5e1; padding: 40px;">Faculty profiles will appear here soon.</p>';
             return;
         }
 
@@ -539,7 +539,7 @@ async function loadFaculty() {
             <div class="faculty-card">
                 <img src="${f.photo}" alt="${f.name}" class="faculty-img">
                 <div class="faculty-name">${f.name}</div>
-                <div style="color: #666; font-size: 0.8rem;">Dedicated Teacher</div>
+                <div style="color: #cbd5e1; font-size: 0.8rem;">Dedicated Teacher</div>
             </div>
         `).join('');
     } catch (error) {
@@ -556,7 +556,7 @@ async function loadFacultyAdmin() {
         const data = await response.json();
 
         list.innerHTML = data.map(f => `
-            <div style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; text-align: center; background: #fff;">
+            <div style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; text-align: center; background: var(--navy-light);">
                 <img src="${f.photo}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
                 <div style="font-weight: 600; margin-bottom: 10px; font-size: 0.9rem;">${f.name}</div>
                 <button onclick="deleteFaculty('${f.id}')" style="background: var(--red); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.75rem;">Remove</button>
@@ -759,7 +759,7 @@ async function loadStudents() {
                     <img src="${s.photo}" style="width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid #ddd;">
                     <div style="flex: 1;">
                         <h4 style="margin: 0; color: var(--navy);">${s.name}</h4>
-                        <p style="font-size: 0.8rem; color: #666; margin: 3px 0;">Class: ${s.student_class} | Roll: ${s.roll_no}</p>
+                        <p style="font-size: 0.8rem; color: #cbd5e1; margin: 3px 0;">Class: ${s.student_class} | Roll: ${s.roll_no}</p>
                         <div style="display: flex; gap: 8px; margin-top: 10px;">
                             <button onclick="openIDCardPreview(${index})" class="primary" style="padding: 5px 12px; font-size: 0.75rem; background: #27ae60; cursor: pointer;">
                                 <i class="fas fa-eye"></i> View ID
@@ -1203,7 +1203,7 @@ async function loadStudentLibrary() {
         const books = await response.json();
         
         if (books.length === 0) {
-            list.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: #666; padding: 40px;">No books available in the library yet.</p>';
+            list.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: #cbd5e1; padding: 40px;">No books available in the library yet.</p>';
             return;
         }
 
@@ -1275,13 +1275,13 @@ async function loadEnquiries() {
         const data = await response.json();
         
         if (data.length === 0) {
-            table.innerHTML = '<tr><td colspan="5" style="padding: 30px; text-align: center; color: #666;">No enquiries received yet.</td></tr>';
+            table.innerHTML = '<tr><td colspan="5" style="padding: 30px; text-align: center; color: #cbd5e1;">No enquiries received yet.</td></tr>';
             return;
         }
 
         table.innerHTML = data.map(enq => `
             <tr>
-                <td style="padding: 15px; border-bottom: 1px solid #eee; font-size: 0.85rem; color: #666;">
+                <td style="padding: 15px; border-bottom: 1px solid #eee; font-size: 0.85rem; color: #cbd5e1;">
                     ${new Date(enq.timestamp).toLocaleString()}
                 </td>
                 <td style="padding: 15px; border-bottom: 1px solid #eee;">
@@ -1316,3 +1316,4 @@ async function deleteEnquiry(id) {
         if (resp.ok) loadEnquiries();
     } catch (e) { console.error(e); }
 }
+
