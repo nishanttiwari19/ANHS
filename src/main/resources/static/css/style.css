@@ -57,8 +57,7 @@ body {
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 15px 5%;
-    position: sticky;
-    top: 0;
+    position: sticky; top: 0; /* Sticky enabled on desktop */
     z-index: 1000;
     display: flex;
     justify-content: space-between;
@@ -379,7 +378,7 @@ body {
 }
 
 .testimonial-card {
-    background: var(--white);
+    background: var(--navy-light);
     color: var(--text-dark);
     padding: 50px 40px 40px;
     border-radius: 20px;
@@ -441,7 +440,7 @@ footer {
     max-width: 800px;
     margin: 50px auto;
     padding: 30px;
-    background: var(--white);
+    background: var(--navy-light);
     border-radius: 10px;
     box-shadow: var(--shadow);
 }
@@ -716,7 +715,7 @@ button.primary {
 }
 
 .faculty-card {
-    background: var(--white);
+    background: var(--navy-light);
     padding: 30px 20px;
     border-radius: 20px;
     text-align: center;
@@ -754,7 +753,7 @@ button.primary {
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     position: relative;
     z-index: 1;
-    background: var(--white);
+    background: var(--navy-light);
 }
 
 .faculty-card h3 {
@@ -1188,3 +1187,28 @@ button.primary {
     }
 }
 
+
+/* --- Ultimate Mobile Fixes --- */
+@media (max-width: 768px) {
+    .main-nav {
+        position: relative !important; /* Un-stick the giant nav on mobile */
+    }
+    .school-info span {
+        display: block !important;
+        width: 100% !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        margin-bottom: 5px;
+    }
+    .top-header {
+        height: auto !important;
+        overflow: hidden;
+    }
+    #gallery, #notifications, .section {
+        background: var(--navy) !important;
+    }
+    .admin-container, .testimonial-card, .faculty-card {
+        background: var(--navy-light) !important;
+        color: var(--text-dark) !important;
+    }
+}
